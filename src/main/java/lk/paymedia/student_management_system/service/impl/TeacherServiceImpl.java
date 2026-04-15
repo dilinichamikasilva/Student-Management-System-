@@ -5,7 +5,7 @@ import lk.paymedia.student_management_system.dto.request.TeacherRequestDTO;
 import lk.paymedia.student_management_system.dto.response.TeacherResponseDTO;
 import lk.paymedia.student_management_system.entity.*;
 import lk.paymedia.student_management_system.exception.InternalServerErrorException;
-import lk.paymedia.student_management_system.exception.UserAlreadyExistsException;
+import lk.paymedia.student_management_system.exception.ResourceAlreadyExistsException;
 import lk.paymedia.student_management_system.exception.UserNotFoundException;
 import lk.paymedia.student_management_system.repository.TeacherRepository;
 import lk.paymedia.student_management_system.repository.UserRepository;
@@ -32,7 +32,7 @@ public class TeacherServiceImpl implements TeacherService {
         //Check if profile already exists
         if (teacherRepository.existsByEmail(dto.getEmail())) {
             log.warn("Profile creation failed: Email {} already registered", dto.getEmail());
-            throw new UserAlreadyExistsException("Teacher profile with this email already exists.");
+            throw new ResourceAlreadyExistsException("Teacher profile with this email already exists.");
         }
 
         // Fetch the User entity

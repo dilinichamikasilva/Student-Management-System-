@@ -8,7 +8,7 @@ import lk.paymedia.student_management_system.entity.RoleType;
 import lk.paymedia.student_management_system.entity.User;
 import lk.paymedia.student_management_system.entity.UserRole;
 import lk.paymedia.student_management_system.exception.InternalServerErrorException;
-import lk.paymedia.student_management_system.exception.UserAlreadyExistsException;
+import lk.paymedia.student_management_system.exception.ResourceAlreadyExistsException;
 import lk.paymedia.student_management_system.repository.RoleRepository;
 import lk.paymedia.student_management_system.repository.UserRepository;
 import lk.paymedia.student_management_system.service.AuthService;
@@ -45,7 +45,7 @@ public class AuthServiceImpl implements AuthService {
         //Check if user exists
         if (userRepository.existsByUsername(requestDTO.getUsername())) {
             log.warn("Registration failed: Username {} already exists", requestDTO.getUsername());
-            throw new UserAlreadyExistsException(requestDTO.getUsername());
+            throw new ResourceAlreadyExistsException(requestDTO.getUsername());
         }
 
         //Map DTO to Entity

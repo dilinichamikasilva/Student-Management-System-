@@ -5,7 +5,7 @@ import lk.paymedia.student_management_system.dto.request.StudentRequestDTO;
 import lk.paymedia.student_management_system.dto.response.StudentResponseDTO;
 import lk.paymedia.student_management_system.entity.*;
 import lk.paymedia.student_management_system.exception.InternalServerErrorException;
-import lk.paymedia.student_management_system.exception.UserAlreadyExistsException;
+import lk.paymedia.student_management_system.exception.ResourceAlreadyExistsException;
 import lk.paymedia.student_management_system.exception.UserNotFoundException;
 import lk.paymedia.student_management_system.repository.CourseRepository;
 import lk.paymedia.student_management_system.repository.StudentRepository;
@@ -33,7 +33,7 @@ public class StudentServiceImpl implements StudentService {
         log.info("Creating profile and enrolling user: {}", currentUsername);
 
         if (studentRepository.existsByEmail(dto.getEmail())) {
-            throw new UserAlreadyExistsException("Student profile with this email already exists.");
+            throw new ResourceAlreadyExistsException("Student profile with this email already exists.");
         }
 
         User user = userRepository.findByUsername(currentUsername)

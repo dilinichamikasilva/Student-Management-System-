@@ -14,8 +14,8 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(new APIResponse(500, e.getMessage() ,null ), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @ExceptionHandler(UserAlreadyExistsException.class)
-    public ResponseEntity<APIResponse> handleUserAlreadyExists(UserAlreadyExistsException ex) {
+    @ExceptionHandler(ResourceAlreadyExistsException.class)
+    public ResponseEntity<APIResponse> handleUserAlreadyExists(ResourceAlreadyExistsException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(new APIResponse(409, ex.getMessage(), null));
     }
