@@ -16,7 +16,7 @@ public class Role {
 
     @Enumerated(EnumType.STRING)
     @Column(unique = true, nullable = false)
-    private RoleType role;
+    private RoleType roleType;
 
     @OneToMany(mappedBy = "role", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<UserRole> userRoles = new HashSet<>();
