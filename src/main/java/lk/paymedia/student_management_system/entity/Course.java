@@ -3,6 +3,9 @@ package lk.paymedia.student_management_system.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Table(name = "courses")
 @Data
@@ -22,6 +25,10 @@ public class Course {
     private Double credits;
 
     private Boolean isPublished;
+
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Enrollment> enrollments = new HashSet<>();
+
 
 
 }
