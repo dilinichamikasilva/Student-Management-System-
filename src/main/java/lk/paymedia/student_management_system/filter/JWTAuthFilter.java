@@ -28,8 +28,7 @@ public class JWTAuthFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         String path = request.getServletPath();
-        // Skip filtering for these specific endpoints
-        return path.equals("/v1/register") || path.equals("/v1/login");
+        return path.equals("/auth/register") || path.equals("/auth/login");
     }
 
     @Override
@@ -41,10 +40,8 @@ public class JWTAuthFilter extends OncePerRequestFilter {
             try {
                 username = jwtUtil.extractUserName(jwtToken);
             } catch (Exception e) {
-                logger.warn("JWT extraction failed: " + e.getMessage());
+                log.warn("JWT validation failed: {}", e.getMessage());
             }
-        }else{
-            log.warn("Token is expired! Access should be denied");
         }
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
@@ -58,9 +55,10 @@ public class JWTAuthFilter extends OncePerRequestFilter {
                 );
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
-                filterChain.doFilter(request, response);
             }
         }
+
+        filterChain.doFilter(request, response);
     }
 
     private String extractToken(HttpServletRequest request) {

@@ -16,4 +16,5 @@ public class UserResponseDTO {
     private String username;
     private Boolean enabled;
     private Set<String> userRoles;
+    private String token;
 }
