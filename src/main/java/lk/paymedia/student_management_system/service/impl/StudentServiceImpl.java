@@ -3,13 +3,11 @@ package lk.paymedia.student_management_system.service.impl;
 import jakarta.transaction.Transactional;
 import lk.paymedia.student_management_system.dto.request.StudentRequestDTO;
 import lk.paymedia.student_management_system.dto.response.StudentResponseDTO;
-import lk.paymedia.student_management_system.entity.Address;
-import lk.paymedia.student_management_system.entity.Name;
-import lk.paymedia.student_management_system.entity.Student;
-import lk.paymedia.student_management_system.entity.User;
+import lk.paymedia.student_management_system.entity.*;
 import lk.paymedia.student_management_system.exception.InternalServerErrorException;
 import lk.paymedia.student_management_system.exception.UserAlreadyExistsException;
 import lk.paymedia.student_management_system.exception.UserNotFoundException;
+import lk.paymedia.student_management_system.repository.CourseRepository;
 import lk.paymedia.student_management_system.repository.StudentRepository;
 import lk.paymedia.student_management_system.repository.UserRepository;
 import lk.paymedia.student_management_system.service.StudentService;
@@ -18,6 +16,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -25,56 +25,67 @@ import java.time.LocalDate;
 public class StudentServiceImpl implements StudentService {
     private final StudentRepository studentRepository;
     private final UserRepository userRepository;
+    private final CourseRepository courseRepository;
 
     @Override
     @Transactional
     public StudentResponseDTO createStudentProfile(StudentRequestDTO dto, String currentUsername) {
-        log.info("Attempting to create student profile for user: {}", currentUsername);
+        log.info("Creating profile and enrolling user: {}", currentUsername);
 
-        //Check if profile already exists
         if (studentRepository.existsByEmail(dto.getEmail())) {
-            log.warn("Profile creation failed: Email {} already registered", dto.getEmail());
             throw new UserAlreadyExistsException("Student profile with this email already exists.");
         }
 
-        // Fetch the User entity
         User user = userRepository.findByUsername(currentUsername)
                 .orElseThrow(() -> new UserNotFoundException("User not found: " + currentUsername));
 
-        // Map DTO to Entity
+        // Build the Student base entity
         Student student = Student.builder()
                 .studentId(dto.getStudentId())
                 .email(dto.getEmail())
                 .dateOfBirth(dto.getDateOfBirth())
                 .enrollmentDate(LocalDate.now())
-                .name(Name.builder()
-                        .firstName(dto.getFirstName())
-                        .lastName(dto.getLastName())
-                        .build())
-                .address(Address.builder()
-                        .street(dto.getStreet())
-                        .city(dto.getCity())
-                        .state(dto.getState())
-                        .zipCode(dto.getZipCode())
-                        .build())
+                .name(new Name(dto.getFirstName(), dto.getLastName()))
+                .address(new Address(dto.getStreet(), dto.getCity(), dto.getState(), dto.getZipCode()))
                 .user(user)
+                .enrollments(new HashSet<>())
                 .build();
+
+        // Handle Course Enrollments
+        if (dto.getCourseIds() != null && !dto.getCourseIds().isEmpty()) {
+            log.info("Processing enrollments for {} courses", dto.getCourseIds().size());
+
+            dto.getCourseIds().forEach(courseId -> {
+                Course course = courseRepository.findById(courseId)
+                        .orElseThrow(() -> new RuntimeException("Course not found with ID: " + courseId));
+
+                Enrollment enrollment = new Enrollment();
+                enrollment.setStudent(student);
+                enrollment.setCourse(course);
+                enrollment.setEnrolledDate(LocalDate.now());
+                enrollment.setStatus(Status.ONGOING);
+
+                student.getEnrollments().add(enrollment);
+            });
+        }
 
         try {
             Student savedStudent = studentRepository.save(student);
-            log.info("Student profile created successfully for ID: {}", savedStudent.getStudentId());
+            log.info("Student and enrollments saved successfully.");
 
             return StudentResponseDTO.builder()
                     .id(savedStudent.getId())
                     .studentId(savedStudent.getStudentId())
                     .fullName(savedStudent.getName().getFirstName() + " " + savedStudent.getName().getLastName())
                     .email(savedStudent.getEmail())
-                    .enrollmentDate(savedStudent.getEnrollmentDate())
-                    .city(savedStudent.getAddress().getCity())
+                    .enrolledCourses(savedStudent.getEnrollments().stream()
+                            .map(e -> e.getCourse().getCourseName())
+                            .collect(Collectors.toSet()))
                     .build();
+
         } catch (Exception e) {
-            log.error("Critical error saving student profile: {}", e.getMessage());
-            throw new InternalServerErrorException("Failed to save student profile due to database error.");
+            log.error("Error during student registration: {}", e.getMessage());
+            throw new InternalServerErrorException("Failed to complete registration and enrollment.");
         }
     }
 }

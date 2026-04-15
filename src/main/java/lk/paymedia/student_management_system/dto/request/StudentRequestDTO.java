@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -19,4 +20,5 @@ public class StudentRequestDTO {
     private String city;
     private String state;
     private String zipCode;
+    private Set<Long> courseIds;
 }
