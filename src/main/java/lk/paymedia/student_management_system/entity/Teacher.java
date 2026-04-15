@@ -3,6 +3,9 @@ package lk.paymedia.student_management_system.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Table(name = "teachers")
 @Data
@@ -35,6 +38,9 @@ public class Teacher {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
+
+    @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<CourseAssignment> courseAssignments = new HashSet<>();
 
 
 }
