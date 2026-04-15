@@ -3,6 +3,9 @@ package lk.paymedia.student_management_system.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Table(name = "users")
 @Data
@@ -17,6 +20,9 @@ public class User {
     @Column(nullable = false)
     private String password;
     private Boolean enabled;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true , fetch = FetchType.EAGER)
+    private Set<UserRole> userRoles = new HashSet<>();
 
 
 }
