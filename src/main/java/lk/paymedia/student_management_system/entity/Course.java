@@ -23,7 +23,6 @@ public class Course {
     private String description;
 
     private Double credits;
-
     private Boolean isPublished;
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
