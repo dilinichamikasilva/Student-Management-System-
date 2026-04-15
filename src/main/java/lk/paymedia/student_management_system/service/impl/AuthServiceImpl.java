@@ -12,6 +12,7 @@ import lk.paymedia.student_management_system.repository.RoleRepository;
 import lk.paymedia.student_management_system.repository.UserRepository;
 import lk.paymedia.student_management_system.service.AuthService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.stream.Collectors;
@@ -22,43 +23,39 @@ public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     @Transactional
     public UserResponseDTO registerUser(UserRequestDTO requestDTO) {
-        try{
-            if(userRepository.findByUsername(requestDTO.getUsername())){
-                throw new UserAlreadyExistsException( requestDTO.getUsername());
-            }
-
-            User user = new User();
-            user.setUsername(requestDTO.getUsername());
-            user.setPassword(requestDTO.getPassword());
-            user.setEnabled(true);
-
-            if(requestDTO.getUserRoles() != null){
-                user.setUserRoles(requestDTO.getUserRoles().stream().map(roleName -> {
-                    Role role = roleRepository.findByRoleType(RoleType.valueOf(roleName))
-                            .orElseThrow(() -> new RuntimeException("Role not found: " + roleName));
-
-                    UserRole userRole = new UserRole();
-                    userRole.setUser(user);
-                    userRole.setRole(role);
-                    return userRole;
-                }).collect(Collectors.toSet()));
-            }
-
-            User savedUser = userRepository.save(user);
-
-            return UserResponseDTO.builder()
-                    .id(savedUser.getId())
-                    .username(savedUser.getUsername())
-                    .enabled(savedUser.getEnabled())
-                    .userRoles(requestDTO.getUserRoles())
-                    .build();
-
-        }catch (Exception e){
-            throw new IllegalArgumentException("An error occurred during user registration: " + e.getMessage());
+        if (userRepository.existsByUsername(requestDTO.getUsername())) {
+            throw new UserAlreadyExistsException(requestDTO.getUsername());
         }
+
+        User user = new User();
+        user.setUsername(requestDTO.getUsername());
+        user.setPassword(passwordEncoder.encode(requestDTO.getPassword()));
+        user.setEnabled(true);
+
+        if (requestDTO.getUserRoles() != null && !requestDTO.getUserRoles().isEmpty()) {
+            user.setUserRoles(requestDTO.getUserRoles().stream().map(roleName -> {
+                Role role = roleRepository.findByRoleType(RoleType.valueOf(roleName))
+                        .orElseThrow(() -> new RuntimeException("Role " + roleName + " not found in DB. Please seed the roles table first."));
+
+                UserRole userRole = new UserRole();
+                userRole.setUser(user);
+                userRole.setRole(role);
+                return userRole;
+            }).collect(Collectors.toSet()));
+        }
+
+        User savedUser = userRepository.save(user);
+
+        return UserResponseDTO.builder()
+                .id(savedUser.getId())
+                .username(savedUser.getUsername())
+                .enabled(savedUser.getEnabled())
+                .userRoles(requestDTO.getUserRoles())
+                .build();
     }
 }
