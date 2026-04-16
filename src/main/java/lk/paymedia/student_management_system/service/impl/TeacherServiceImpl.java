@@ -133,6 +133,7 @@ public class TeacherServiceImpl implements TeacherService {
             assignment.setAssignedDate(LocalDate.now());
             teacher.addCourseAssignment(assignment);
 
+            teacherRepository.save(teacher);
             log.info("Teacher {} successfully assigned to course ID: {}", name, courseId);
         });
     }
