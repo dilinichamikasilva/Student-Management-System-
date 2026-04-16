@@ -69,4 +69,14 @@ public class CourseController {
         studentService.addMoreCourses(courseIds, auth.getName());
         return ResponseEntity.ok(new APIResponse(200, "Courses added successfully", null));
     }
+
+    @PatchMapping("/teacher/add-courses")
+    @PreAuthorize("hasRole('ROLE_TEACHER')")
+    public ResponseEntity<APIResponse> assignMoreCourses(
+            @RequestBody Set<Long> courseIds,
+            Authentication auth) {
+
+        teacherService.addMoreCourses(courseIds, auth.getName());
+        return ResponseEntity.ok(new APIResponse(200, "Courses added successfully", null));
+    }
 }

@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 
@@ -105,5 +106,34 @@ public class TeacherServiceImpl implements TeacherService {
 
         courseAssignmentRepository.delete(assignment);
         log.info("Teacher {} successfully withdrawn from course ID: {}", currentUsername, courseId);
+    }
+
+    @Override
+    public void addMoreCourses(Set<Long> courseIds, String name) {
+        log.info("Teacher {} attempting to add courses: {}", name, courseIds);
+
+        Teacher teacher = teacherRepository.findByUserUsername(name)
+                .orElseThrow(() -> new UserNotFoundException("Teacher not found for user: " + name));
+
+        Set<Long> existingCourseIds = teacher.getCourseAssignments().stream()
+                .map(a -> a.getCourse().getId())
+                .collect(Collectors.toSet());
+
+        courseIds.forEach(courseId -> {
+            if (existingCourseIds.contains(courseId)) {
+                log.warn("Teacher {} is already assigned to course ID: {}", name, courseId);
+                return;
+            }
+
+            Course course = courseRepository.findById(courseId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Course not found: " + courseId));
+
+            CourseAssignment assignment = new CourseAssignment();
+            assignment.setCourse(course);
+            assignment.setAssignedDate(LocalDate.now());
+            teacher.addCourseAssignment(assignment);
+
+            log.info("Teacher {} successfully assigned to course ID: {}", name, courseId);
+        });
     }
 }

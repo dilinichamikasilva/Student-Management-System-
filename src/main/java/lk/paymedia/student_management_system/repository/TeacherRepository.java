@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface TeacherRepository extends JpaRepository<Teacher, Long> {
     boolean existsByEmail(String email);
@@ -15,4 +17,6 @@ public interface TeacherRepository extends JpaRepository<Teacher, Long> {
             "JOIN t.courseAssignments ca " +
             "WHERE u.username = :username AND ca.course.id = :courseId")
     boolean existsByUsernameAndCourseId(@Param("username")String username, Long courseId);
+
+    Optional<Teacher> findByUserUsername(String name);
 }
