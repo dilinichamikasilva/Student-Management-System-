@@ -31,6 +31,19 @@ public class CourseController {
                 .body(new APIResponse(201, "Course created successfully", null));
     }
 
+    @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<APIResponse> updateCourse(@PathVariable Long id, @RequestBody CourseRequestDTO dto) {
+        return ResponseEntity.ok(new APIResponse(200, "Course updated", courseService.updateCourse(id, dto)));
+    }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<APIResponse> deleteCourse(@PathVariable Long id) {
+        courseService.deleteCourse(id);
+        return ResponseEntity.ok(new APIResponse(200, "Course deleted successfully", null));
+    }
+
     @DeleteMapping("/student/drop/{courseId}")
     @PreAuthorize("hasRole('ROLE_STUDENT')")
     public ResponseEntity<APIResponse> studentDrop(@PathVariable Long courseId, Authentication auth) {
