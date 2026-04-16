@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -108,5 +109,37 @@ public class StudentServiceImpl implements StudentService {
 
         enrollmentRepository.delete(enrollment);
         log.info("Course ID: {} dropped successfully for student: {}", courseId, currentUsername);
+    }
+
+    @Override
+    @Transactional
+    public void addMoreCourses(Set<Long> newCourseIds, String currentUsername) {
+        log.info("Student {} adding {} more courses", currentUsername, newCourseIds.size());
+
+        // Fetch the Student profile
+        Student student = studentRepository.findByUserUsername(currentUsername)
+                .orElseThrow(() -> new ResourceNotFoundException("Student profile not found. Please register first."));
+
+        Set<Long> existingCourseIds = student.getEnrollments().stream()
+                .map(e -> e.getCourse().getId())
+                .collect(Collectors.toSet());
+
+        // Add only the new courses
+        newCourseIds.stream()
+                .filter(courseId -> !existingCourseIds.contains(courseId))
+                .forEach(courseId -> {
+                    Course course = courseRepository.findById(courseId)
+                            .orElseThrow(() -> new ResourceNotFoundException("Course not found: " + courseId));
+
+                    Enrollment enrollment = new Enrollment();
+                    enrollment.setCourse(course);
+                    enrollment.setEnrolledDate(LocalDate.now());
+                    enrollment.setStatus(Status.ONGOING);
+
+                    student.addEnrollment(enrollment);
+                });
+
+        studentRepository.save(student);
+        log.info("Extra courses successfully added for student: {}", currentUsername);
     }
 }

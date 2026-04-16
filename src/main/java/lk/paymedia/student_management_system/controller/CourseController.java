@@ -13,6 +13,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Set;
+
 @RestController
 @RequestMapping("/course")
 @RequiredArgsConstructor
@@ -56,5 +58,15 @@ public class CourseController {
     public ResponseEntity<APIResponse> teacherWithdraw(@PathVariable Long courseId, Authentication auth) {
         teacherService.withdrawFromCourse(courseId, auth.getName());
         return ResponseEntity.ok(new APIResponse(200, "Withdrawn from course successfully", null));
+    }
+
+    @PatchMapping("/student/add-courses")
+    @PreAuthorize("hasRole('ROLE_STUDENT')")
+    public ResponseEntity<APIResponse> addCourses(
+            @RequestBody Set<Long> courseIds,
+            Authentication auth) {
+
+        studentService.addMoreCourses(courseIds, auth.getName());
+        return ResponseEntity.ok(new APIResponse(200, "Courses added successfully", null));
     }
 }
