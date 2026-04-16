@@ -7,7 +7,6 @@ import lk.paymedia.student_management_system.dto.response.MarksResponseDTO;
 import lk.paymedia.student_management_system.entity.Enrollment;
 import lk.paymedia.student_management_system.exception.ResourceNotFoundException;
 import lk.paymedia.student_management_system.repository.EnrollmentRepository;
-import lk.paymedia.student_management_system.repository.StudentRepository;
 import lk.paymedia.student_management_system.repository.TeacherRepository;
 import lk.paymedia.student_management_system.service.GradeService;
 import lombok.RequiredArgsConstructor;
