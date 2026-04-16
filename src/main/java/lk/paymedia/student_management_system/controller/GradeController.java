@@ -1,6 +1,7 @@
 package lk.paymedia.student_management_system.controller;
 
 import lk.paymedia.student_management_system.dto.request.UpdateMarksRequestDTO;
+import lk.paymedia.student_management_system.dto.response.CourseGradeResponseDTO;
 import lk.paymedia.student_management_system.service.GradeService;
 import lk.paymedia.student_management_system.util.APIResponse;
 import lombok.RequiredArgsConstructor;
@@ -8,10 +9,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/grade")
@@ -28,6 +28,16 @@ public class GradeController {
 
         gradeService.updateStudentGrades(dto, authentication.getName());
         return ResponseEntity.ok(new APIResponse(200, "Grades updated successfully", null));
+    }
+
+    @GetMapping("/course/{courseId}")
+    @PreAuthorize("hasRole('ROLE_TEACHER')")
+    public ResponseEntity<APIResponse> getCourseGrades(
+            @PathVariable Long courseId,
+            Authentication authentication) {
+
+        List<CourseGradeResponseDTO> grades = gradeService.getGradesByCourse(courseId, authentication.getName());
+        return ResponseEntity.ok(new APIResponse(200, "Grades retrieved successfully", grades));
     }
 
 }

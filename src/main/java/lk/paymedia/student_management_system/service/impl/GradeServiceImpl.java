@@ -2,6 +2,7 @@ package lk.paymedia.student_management_system.service.impl;
 
 import jakarta.transaction.Transactional;
 import lk.paymedia.student_management_system.dto.request.UpdateMarksRequestDTO;
+import lk.paymedia.student_management_system.dto.response.CourseGradeResponseDTO;
 import lk.paymedia.student_management_system.entity.Enrollment;
 import lk.paymedia.student_management_system.exception.ResourceNotFoundException;
 import lk.paymedia.student_management_system.repository.EnrollmentRepository;
@@ -12,6 +13,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -48,5 +52,30 @@ public class GradeServiceImpl implements GradeService {
         // Save
         enrollmentRepository.save(enrollment);
         log.info("Marks updated successfully.");
+    }
+
+    @Override
+    public List<CourseGradeResponseDTO> getGradesByCourse(Long courseId, String teacherUsername) {
+        log.info("Teacher {} requesting grades for Course ID: {}", teacherUsername, courseId);
+
+        // Is this teacher assigned to this course?
+        boolean isAssigned = teacherRepository.existsByUsernameAndCourseId(teacherUsername, courseId);
+        if (!isAssigned) {
+            throw new AccessDeniedException("You are not assigned to view grades for this course.");
+        }
+
+        // Fetch all enrollments for the course
+        List<Enrollment> enrollments = enrollmentRepository.findAllByCourseId(courseId);
+
+        // Map to DTO
+        return enrollments.stream()
+                .map(e -> CourseGradeResponseDTO.builder()
+                        .studentId(e.getStudent().getStudentId())
+                        .studentName(e.getStudent().getName().getFirstName() + " " + e.getStudent().getName().getLastName())
+                        .marks(e.getMarks())
+                        .grade(e.getGrade())
+                        .status(e.getStatus())
+                        .build())
+                .toList();
     }
 }
