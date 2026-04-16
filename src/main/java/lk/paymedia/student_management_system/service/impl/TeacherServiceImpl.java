@@ -6,7 +6,9 @@ import lk.paymedia.student_management_system.dto.response.TeacherResponseDTO;
 import lk.paymedia.student_management_system.entity.*;
 import lk.paymedia.student_management_system.exception.InternalServerErrorException;
 import lk.paymedia.student_management_system.exception.ResourceAlreadyExistsException;
+import lk.paymedia.student_management_system.exception.ResourceNotFoundException;
 import lk.paymedia.student_management_system.exception.UserNotFoundException;
+import lk.paymedia.student_management_system.repository.CourseAssignmentRepository;
 import lk.paymedia.student_management_system.repository.CourseRepository;
 import lk.paymedia.student_management_system.repository.TeacherRepository;
 import lk.paymedia.student_management_system.repository.UserRepository;
@@ -28,6 +30,7 @@ public class TeacherServiceImpl implements TeacherService {
     private final UserRepository userRepository;
     private final TeacherRepository teacherRepository;
     private final CourseRepository courseRepository;
+    private final CourseAssignmentRepository courseAssignmentRepository;
 
     @Override
     @Transactional
@@ -90,5 +93,17 @@ public class TeacherServiceImpl implements TeacherService {
             log.error("Error saving teacher: {}", e.getMessage());
             throw new InternalServerErrorException("Database error during teacher registration.");
         }
+    }
+
+    @Override
+    @Transactional
+    public void withdrawFromCourse(Long courseId, String currentUsername) {
+        log.info("Teacher {} attempting to withdraw from course ID: {}", currentUsername, courseId);
+
+        CourseAssignment assignment = courseAssignmentRepository.findByTeacherUserUsernameAndCourseId(currentUsername, courseId)
+                .orElseThrow(() -> new ResourceNotFoundException("You are not assigned to this course."));
+
+        courseAssignmentRepository.delete(assignment);
+        log.info("Teacher {} successfully withdrawn from course ID: {}", currentUsername, courseId);
     }
 }

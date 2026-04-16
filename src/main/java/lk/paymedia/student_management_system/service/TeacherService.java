@@ -5,4 +5,6 @@ import lk.paymedia.student_management_system.dto.response.TeacherResponseDTO;
 
 public interface TeacherService {
     TeacherResponseDTO createTeacherProfile(TeacherRequestDTO requestDTO, String currentUsername);
+
+    void withdrawFromCourse(Long courseId, String name);
 }

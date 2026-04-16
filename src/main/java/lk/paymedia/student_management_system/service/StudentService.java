@@ -5,4 +5,6 @@ import lk.paymedia.student_management_system.dto.response.StudentResponseDTO;
 
 public interface StudentService {
     StudentResponseDTO createStudentProfile(StudentRequestDTO requestDTO, String currentUsername);
+
+    void dropCourseForStudent(Long courseId, String name);
 }

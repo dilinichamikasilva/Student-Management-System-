@@ -9,6 +9,7 @@ import lk.paymedia.student_management_system.exception.ResourceAlreadyExistsExce
 import lk.paymedia.student_management_system.exception.ResourceNotFoundException;
 import lk.paymedia.student_management_system.exception.UserNotFoundException;
 import lk.paymedia.student_management_system.repository.CourseRepository;
+import lk.paymedia.student_management_system.repository.EnrollmentRepository;
 import lk.paymedia.student_management_system.repository.StudentRepository;
 import lk.paymedia.student_management_system.repository.UserRepository;
 import lk.paymedia.student_management_system.service.StudentService;
@@ -27,6 +28,7 @@ public class StudentServiceImpl implements StudentService {
     private final StudentRepository studentRepository;
     private final UserRepository userRepository;
     private final CourseRepository courseRepository;
+    private final EnrollmentRepository enrollmentRepository;
 
     @Override
     @Transactional
@@ -88,5 +90,23 @@ public class StudentServiceImpl implements StudentService {
             log.error("Error during student registration: {}", e.getMessage());
             throw new InternalServerErrorException("Failed to complete registration and enrollment.");
         }
+    }
+
+    @Override
+    @Transactional
+    public void dropCourseForStudent(Long courseId, String currentUsername) {
+        log.info("Student {} attempting to drop course ID: {}", currentUsername, courseId);
+
+        // find enrollment
+        Enrollment enrollment = enrollmentRepository.findByStudentUserUsernameAndCourseId(currentUsername, courseId)
+                .orElseThrow(() -> new ResourceNotFoundException("You are not enrolled in this course."));
+
+        // Only allow dropping if the course is not completed
+        if (Status.COMPLETED.equals(enrollment.getStatus())) {
+            throw new IllegalStateException("Cannot drop a course that is already completed.");
+        }
+
+        enrollmentRepository.delete(enrollment);
+        log.info("Course ID: {} dropped successfully for student: {}", courseId, currentUsername);
     }
 }

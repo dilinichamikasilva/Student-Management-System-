@@ -17,4 +17,6 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
     List<Enrollment> findAllByStudentUsername(@Param("username") String username);
 
     List<Enrollment> findAllByCourseId(Long courseId);
+
+    Optional<Enrollment> findByStudentUserUsernameAndCourseId(String currentUsername, Long courseId);
 }
