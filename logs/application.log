@@ -233,3 +233,187 @@
 2026-04-16T08:51:35.909+05:30  INFO 20740 --- [student_management_system] [http-nio-8080-exec-1] l.p.s.controller.StudentController       : Student profile registration request by user: student1
 2026-04-16T08:51:35.916+05:30  INFO 20740 --- [student_management_system] [http-nio-8080-exec-1] l.p.s.service.impl.StudentServiceImpl    : Creating profile and enrolling user: student1
 2026-04-16T08:51:36.007+05:30  INFO 20740 --- [student_management_system] [http-nio-8080-exec-1] l.p.s.service.impl.StudentServiceImpl    : Student and enrollments saved successfully.
+2026-04-16T08:58:15.930+05:30  INFO 20740 --- [student_management_system] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2026-04-16T08:58:16.397+05:30  INFO 20740 --- [student_management_system] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2026-04-16T08:58:16.405+05:30  INFO 20740 --- [student_management_system] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-04-16T08:58:16.413+05:30  INFO 20740 --- [student_management_system] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-04-16T08:58:16.429+05:30  INFO 20740 --- [student_management_system] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2026-04-16T08:58:24.795+05:30  INFO 19776 --- [student_management_system] [main] l.p.s.StudentManagementSystemApplication : Starting StudentManagementSystemApplication using Java 17.0.12 with PID 19776 (C:\Users\Dilini\OneDrive\Documents\PayMedia\Tasks\student_management_system\target\classes started by Dilini in C:\Users\Dilini\OneDrive\Documents\PayMedia\Tasks\student_management_system)
+2026-04-16T08:58:24.798+05:30  INFO 19776 --- [student_management_system] [main] l.p.s.StudentManagementSystemApplication : No active profile set, falling back to 1 default profile: "default"
+2026-04-16T08:58:26.428+05:30  INFO 19776 --- [student_management_system] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-04-16T08:58:26.534+05:30  INFO 19776 --- [student_management_system] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 94 ms. Found 5 JPA repository interfaces.
+2026-04-16T08:58:27.349+05:30  INFO 19776 --- [student_management_system] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2026-04-16T08:58:27.364+05:30  INFO 19776 --- [student_management_system] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-04-16T08:58:27.364+05:30  INFO 19776 --- [student_management_system] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.53]
+2026-04-16T08:58:27.424+05:30  INFO 19776 --- [student_management_system] [main] o.a.c.c.C.[.[localhost].[/api/v1]        : Initializing Spring embedded WebApplicationContext
+2026-04-16T08:58:27.425+05:30  INFO 19776 --- [student_management_system] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2577 ms
+2026-04-16T08:58:27.598+05:30  INFO 19776 --- [student_management_system] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-04-16T08:58:27.674+05:30  INFO 19776 --- [student_management_system] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.45.Final
+2026-04-16T08:58:27.731+05:30  INFO 19776 --- [student_management_system] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-04-16T08:58:28.136+05:30  INFO 19776 --- [student_management_system] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-04-16T08:58:28.173+05:30  INFO 19776 --- [student_management_system] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-04-16T08:58:28.336+05:30  INFO 19776 --- [student_management_system] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@6b2e9db2
+2026-04-16T08:58:28.339+05:30  INFO 19776 --- [student_management_system] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-04-16T08:58:28.424+05:30  WARN 19776 --- [student_management_system] [main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-04-16T08:58:28.443+05:30  INFO 19776 --- [student_management_system] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 9.1
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-04-16T08:58:29.680+05:30  INFO 19776 --- [student_management_system] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-04-16T08:58:29.779+05:30  INFO 19776 --- [student_management_system] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-04-16T08:58:30.223+05:30  INFO 19776 --- [student_management_system] [main] eAuthenticationProviderManagerConfigurer : Global AuthenticationManager configured with AuthenticationProvider bean with name authenticationProvider
+2026-04-16T08:58:30.223+05:30  WARN 19776 --- [student_management_system] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used by Spring Security for automatically configuring username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider. If the current configuration is intentional, to turn off this warning, increase the logging level of 'org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer' to ERROR
+2026-04-16T08:58:30.378+05:30  WARN 19776 --- [student_management_system] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-04-16T08:58:31.041+05:30  INFO 19776 --- [student_management_system] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/api/v1'
+2026-04-16T08:58:31.053+05:30  INFO 19776 --- [student_management_system] [main] l.p.s.StudentManagementSystemApplication : Started StudentManagementSystemApplication in 6.906 seconds (process running for 8.007)
+2026-04-16T08:58:50.220+05:30  INFO 19776 --- [student_management_system] [http-nio-8080-exec-2] o.a.c.c.C.[.[localhost].[/api/v1]        : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-04-16T08:58:50.221+05:30  INFO 19776 --- [student_management_system] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-04-16T08:58:50.222+05:30  INFO 19776 --- [student_management_system] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2026-04-16T08:58:50.363+05:30  INFO 19776 --- [student_management_system] [http-nio-8080-exec-2] l.p.s.controller.AuthController          : User login attempt for username: teacher1
+2026-04-16T08:58:50.364+05:30  INFO 19776 --- [student_management_system] [http-nio-8080-exec-2] l.p.s.service.impl.AuthServiceImpl       : Login attempt initiated for user: teacher1
+2026-04-16T08:58:50.801+05:30  INFO 19776 --- [student_management_system] [http-nio-8080-exec-2] l.p.s.service.impl.AuthServiceImpl       : JWT Token generated successfully for user: teacher1
+2026-04-16T08:58:50.802+05:30  INFO 19776 --- [student_management_system] [http-nio-8080-exec-2] l.p.s.controller.AuthController          : User teacher1 logged in successfully
+2026-04-16T08:59:42.475+05:30  INFO 19776 --- [student_management_system] [http-nio-8080-exec-3] l.p.s.controller.TeacherController       : Teacher profile registration request by user: teacher1
+2026-04-16T08:59:42.481+05:30  INFO 19776 --- [student_management_system] [http-nio-8080-exec-3] l.p.s.service.impl.TeacherServiceImpl    : Creating teacher profile and assignments for: teacher1
+2026-04-16T08:59:42.529+05:30 ERROR 19776 --- [student_management_system] [http-nio-8080-exec-3] l.p.s.service.impl.TeacherServiceImpl    : Error saving teacher: java.lang.StackOverflowError
+2026-04-16T08:59:52.801+05:30  INFO 19776 --- [student_management_system] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2026-04-16T08:59:52.915+05:30  INFO 19776 --- [student_management_system] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2026-04-16T08:59:52.923+05:30  INFO 19776 --- [student_management_system] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-04-16T08:59:52.931+05:30  INFO 19776 --- [student_management_system] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-04-16T08:59:52.944+05:30  INFO 19776 --- [student_management_system] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2026-04-16T08:59:55.836+05:30  INFO 1316 --- [student_management_system] [main] l.p.s.StudentManagementSystemApplication : Starting StudentManagementSystemApplication using Java 17.0.12 with PID 1316 (C:\Users\Dilini\OneDrive\Documents\PayMedia\Tasks\student_management_system\target\classes started by Dilini in C:\Users\Dilini\OneDrive\Documents\PayMedia\Tasks\student_management_system)
+2026-04-16T08:59:55.838+05:30  INFO 1316 --- [student_management_system] [main] l.p.s.StudentManagementSystemApplication : No active profile set, falling back to 1 default profile: "default"
+2026-04-16T08:59:56.673+05:30  INFO 1316 --- [student_management_system] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-04-16T08:59:56.753+05:30  INFO 1316 --- [student_management_system] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 71 ms. Found 5 JPA repository interfaces.
+2026-04-16T08:59:57.244+05:30  INFO 1316 --- [student_management_system] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2026-04-16T08:59:57.253+05:30  INFO 1316 --- [student_management_system] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-04-16T08:59:57.253+05:30  INFO 1316 --- [student_management_system] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.53]
+2026-04-16T08:59:57.294+05:30  INFO 1316 --- [student_management_system] [main] o.a.c.c.C.[.[localhost].[/api/v1]        : Initializing Spring embedded WebApplicationContext
+2026-04-16T08:59:57.294+05:30  INFO 1316 --- [student_management_system] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1394 ms
+2026-04-16T08:59:57.427+05:30  INFO 1316 --- [student_management_system] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-04-16T08:59:57.480+05:30  INFO 1316 --- [student_management_system] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.45.Final
+2026-04-16T08:59:57.526+05:30  INFO 1316 --- [student_management_system] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-04-16T08:59:57.772+05:30  INFO 1316 --- [student_management_system] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-04-16T08:59:57.797+05:30  INFO 1316 --- [student_management_system] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-04-16T08:59:57.925+05:30  INFO 1316 --- [student_management_system] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@2dbf2da
+2026-04-16T08:59:57.926+05:30  INFO 1316 --- [student_management_system] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-04-16T08:59:57.975+05:30  WARN 1316 --- [student_management_system] [main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-04-16T08:59:57.998+05:30  INFO 1316 --- [student_management_system] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 9.1
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-04-16T08:59:58.970+05:30  INFO 1316 --- [student_management_system] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-04-16T08:59:59.066+05:30  INFO 1316 --- [student_management_system] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-04-16T08:59:59.409+05:30  INFO 1316 --- [student_management_system] [main] eAuthenticationProviderManagerConfigurer : Global AuthenticationManager configured with AuthenticationProvider bean with name authenticationProvider
+2026-04-16T08:59:59.410+05:30  WARN 1316 --- [student_management_system] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used by Spring Security for automatically configuring username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider. If the current configuration is intentional, to turn off this warning, increase the logging level of 'org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer' to ERROR
+2026-04-16T08:59:59.540+05:30  WARN 1316 --- [student_management_system] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-04-16T09:00:00.126+05:30  INFO 1316 --- [student_management_system] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/api/v1'
+2026-04-16T09:00:00.134+05:30  INFO 1316 --- [student_management_system] [main] l.p.s.StudentManagementSystemApplication : Started StudentManagementSystemApplication in 4.811 seconds (process running for 5.415)
+2026-04-16T09:00:03.722+05:30  INFO 1316 --- [student_management_system] [http-nio-8080-exec-1] o.a.c.c.C.[.[localhost].[/api/v1]        : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-04-16T09:00:03.723+05:30  INFO 1316 --- [student_management_system] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-04-16T09:00:03.725+05:30  INFO 1316 --- [student_management_system] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+2026-04-16T09:00:04.207+05:30  INFO 1316 --- [student_management_system] [http-nio-8080-exec-1] l.p.s.controller.TeacherController       : Teacher profile registration request by user: teacher1
+2026-04-16T09:00:04.214+05:30  INFO 1316 --- [student_management_system] [http-nio-8080-exec-1] l.p.s.service.impl.TeacherServiceImpl    : Creating teacher profile and assignments for: teacher1
+2026-04-16T09:00:04.271+05:30 ERROR 1316 --- [student_management_system] [http-nio-8080-exec-1] l.p.s.service.impl.TeacherServiceImpl    : Error saving teacher: java.lang.StackOverflowError
+2026-04-16T09:00:12.067+05:30  INFO 1316 --- [student_management_system] [http-nio-8080-exec-5] l.p.s.controller.TeacherController       : Teacher profile registration request by user: teacher1
+2026-04-16T09:00:12.068+05:30  INFO 1316 --- [student_management_system] [http-nio-8080-exec-5] l.p.s.service.impl.TeacherServiceImpl    : Creating teacher profile and assignments for: teacher1
+2026-04-16T09:00:12.083+05:30 ERROR 1316 --- [student_management_system] [http-nio-8080-exec-5] l.p.s.service.impl.TeacherServiceImpl    : Error saving teacher: java.lang.StackOverflowError
+2026-04-16T09:01:46.629+05:30  INFO 1316 --- [student_management_system] [http-nio-8080-exec-6] l.p.s.controller.TeacherController       : Teacher profile registration request by user: teacher1
+2026-04-16T09:01:46.630+05:30  INFO 1316 --- [student_management_system] [http-nio-8080-exec-6] l.p.s.service.impl.TeacherServiceImpl    : Creating teacher profile and assignments for: teacher1
+2026-04-16T09:01:46.651+05:30 ERROR 1316 --- [student_management_system] [http-nio-8080-exec-6] l.p.s.service.impl.TeacherServiceImpl    : Error saving teacher: java.lang.StackOverflowError
+2026-04-16T09:03:22.226+05:30  INFO 1316 --- [student_management_system] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2026-04-16T09:03:22.412+05:30  INFO 1316 --- [student_management_system] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2026-04-16T09:03:22.416+05:30  INFO 1316 --- [student_management_system] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-04-16T09:03:22.419+05:30  INFO 1316 --- [student_management_system] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-04-16T09:03:22.427+05:30  INFO 1316 --- [student_management_system] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2026-04-16T09:03:28.428+05:30  INFO 13472 --- [student_management_system] [main] l.p.s.StudentManagementSystemApplication : Starting StudentManagementSystemApplication using Java 17.0.12 with PID 13472 (C:\Users\Dilini\OneDrive\Documents\PayMedia\Tasks\student_management_system\target\classes started by Dilini in C:\Users\Dilini\OneDrive\Documents\PayMedia\Tasks\student_management_system)
+2026-04-16T09:03:28.431+05:30  INFO 13472 --- [student_management_system] [main] l.p.s.StudentManagementSystemApplication : No active profile set, falling back to 1 default profile: "default"
+2026-04-16T09:03:29.334+05:30  INFO 13472 --- [student_management_system] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-04-16T09:03:29.425+05:30  INFO 13472 --- [student_management_system] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 80 ms. Found 5 JPA repository interfaces.
+2026-04-16T09:03:29.932+05:30  INFO 13472 --- [student_management_system] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2026-04-16T09:03:29.941+05:30  INFO 13472 --- [student_management_system] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-04-16T09:03:29.942+05:30  INFO 13472 --- [student_management_system] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.53]
+2026-04-16T09:03:29.985+05:30  INFO 13472 --- [student_management_system] [main] o.a.c.c.C.[.[localhost].[/api/v1]        : Initializing Spring embedded WebApplicationContext
+2026-04-16T09:03:29.985+05:30  INFO 13472 --- [student_management_system] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1507 ms
+2026-04-16T09:03:30.108+05:30  INFO 13472 --- [student_management_system] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-04-16T09:03:30.159+05:30  INFO 13472 --- [student_management_system] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.45.Final
+2026-04-16T09:03:30.215+05:30  INFO 13472 --- [student_management_system] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-04-16T09:03:30.491+05:30  INFO 13472 --- [student_management_system] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-04-16T09:03:30.515+05:30  INFO 13472 --- [student_management_system] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-04-16T09:03:30.641+05:30  INFO 13472 --- [student_management_system] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@1de08775
+2026-04-16T09:03:30.643+05:30  INFO 13472 --- [student_management_system] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-04-16T09:03:30.685+05:30  WARN 13472 --- [student_management_system] [main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-04-16T09:03:30.711+05:30  INFO 13472 --- [student_management_system] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 9.1
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-04-16T09:03:31.770+05:30  INFO 13472 --- [student_management_system] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-04-16T09:03:31.869+05:30  INFO 13472 --- [student_management_system] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-04-16T09:03:32.261+05:30  INFO 13472 --- [student_management_system] [main] eAuthenticationProviderManagerConfigurer : Global AuthenticationManager configured with AuthenticationProvider bean with name authenticationProvider
+2026-04-16T09:03:32.261+05:30  WARN 13472 --- [student_management_system] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used by Spring Security for automatically configuring username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider. If the current configuration is intentional, to turn off this warning, increase the logging level of 'org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer' to ERROR
+2026-04-16T09:03:32.397+05:30  WARN 13472 --- [student_management_system] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-04-16T09:03:32.996+05:30  INFO 13472 --- [student_management_system] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/api/v1'
+2026-04-16T09:03:33.005+05:30  INFO 13472 --- [student_management_system] [main] l.p.s.StudentManagementSystemApplication : Started StudentManagementSystemApplication in 5.139 seconds (process running for 5.76)
+2026-04-16T09:03:38.885+05:30  INFO 13472 --- [student_management_system] [http-nio-8080-exec-1] o.a.c.c.C.[.[localhost].[/api/v1]        : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-04-16T09:03:38.885+05:30  INFO 13472 --- [student_management_system] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-04-16T09:03:38.887+05:30  INFO 13472 --- [student_management_system] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+2026-04-16T09:03:39.306+05:30  INFO 13472 --- [student_management_system] [http-nio-8080-exec-1] l.p.s.controller.TeacherController       : Teacher profile registration request by user: teacher1
+2026-04-16T09:03:39.312+05:30  INFO 13472 --- [student_management_system] [http-nio-8080-exec-1] l.p.s.service.impl.TeacherServiceImpl    : Creating teacher profile and assignments for: teacher1
+2026-04-16T09:06:52.332+05:30  INFO 13472 --- [student_management_system] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2026-04-16T09:06:52.570+05:30  INFO 13472 --- [student_management_system] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2026-04-16T09:06:52.574+05:30  INFO 13472 --- [student_management_system] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-04-16T09:06:52.577+05:30  INFO 13472 --- [student_management_system] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-04-16T09:06:52.585+05:30  INFO 13472 --- [student_management_system] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2026-04-16T09:07:00.680+05:30  INFO 19628 --- [student_management_system] [main] l.p.s.StudentManagementSystemApplication : Starting StudentManagementSystemApplication using Java 17.0.12 with PID 19628 (C:\Users\Dilini\OneDrive\Documents\PayMedia\Tasks\student_management_system\target\classes started by Dilini in C:\Users\Dilini\OneDrive\Documents\PayMedia\Tasks\student_management_system)
+2026-04-16T09:07:00.683+05:30  INFO 19628 --- [student_management_system] [main] l.p.s.StudentManagementSystemApplication : No active profile set, falling back to 1 default profile: "default"
+2026-04-16T09:07:02.279+05:30  INFO 19628 --- [student_management_system] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-04-16T09:07:02.381+05:30  INFO 19628 --- [student_management_system] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 90 ms. Found 5 JPA repository interfaces.
+2026-04-16T09:07:03.168+05:30  INFO 19628 --- [student_management_system] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2026-04-16T09:07:03.191+05:30  INFO 19628 --- [student_management_system] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-04-16T09:07:03.191+05:30  INFO 19628 --- [student_management_system] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.53]
+2026-04-16T09:07:03.251+05:30  INFO 19628 --- [student_management_system] [main] o.a.c.c.C.[.[localhost].[/api/v1]        : Initializing Spring embedded WebApplicationContext
+2026-04-16T09:07:03.252+05:30  INFO 19628 --- [student_management_system] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2519 ms
+2026-04-16T09:07:03.442+05:30  INFO 19628 --- [student_management_system] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-04-16T09:07:03.519+05:30  INFO 19628 --- [student_management_system] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.45.Final
+2026-04-16T09:07:03.587+05:30  INFO 19628 --- [student_management_system] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-04-16T09:07:04.097+05:30  INFO 19628 --- [student_management_system] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-04-16T09:07:04.137+05:30  INFO 19628 --- [student_management_system] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-04-16T09:07:04.366+05:30  INFO 19628 --- [student_management_system] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@28bd5015
+2026-04-16T09:07:04.369+05:30  INFO 19628 --- [student_management_system] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-04-16T09:07:04.432+05:30  WARN 19628 --- [student_management_system] [main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-04-16T09:07:04.464+05:30  INFO 19628 --- [student_management_system] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 9.1
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-04-16T09:07:05.953+05:30  INFO 19628 --- [student_management_system] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-04-16T09:07:06.060+05:30  INFO 19628 --- [student_management_system] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-04-16T09:07:06.591+05:30  INFO 19628 --- [student_management_system] [main] eAuthenticationProviderManagerConfigurer : Global AuthenticationManager configured with AuthenticationProvider bean with name authenticationProvider
+2026-04-16T09:07:06.592+05:30  WARN 19628 --- [student_management_system] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used by Spring Security for automatically configuring username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider. If the current configuration is intentional, to turn off this warning, increase the logging level of 'org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer' to ERROR
+2026-04-16T09:07:06.806+05:30  WARN 19628 --- [student_management_system] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-04-16T09:07:07.908+05:30  INFO 19628 --- [student_management_system] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/api/v1'
+2026-04-16T09:07:07.924+05:30  INFO 19628 --- [student_management_system] [main] l.p.s.StudentManagementSystemApplication : Started StudentManagementSystemApplication in 7.869 seconds (process running for 8.771)
+2026-04-16T09:07:16.094+05:30  INFO 19628 --- [student_management_system] [http-nio-8080-exec-2] o.a.c.c.C.[.[localhost].[/api/v1]        : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-04-16T09:07:16.094+05:30  INFO 19628 --- [student_management_system] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-04-16T09:07:16.096+05:30  INFO 19628 --- [student_management_system] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+2026-04-16T09:07:16.253+05:30  INFO 19628 --- [student_management_system] [http-nio-8080-exec-2] l.p.s.controller.AuthController          : User login attempt for username: teacher2
+2026-04-16T09:07:16.253+05:30  INFO 19628 --- [student_management_system] [http-nio-8080-exec-2] l.p.s.service.impl.AuthServiceImpl       : Login attempt initiated for user: teacher2
+2026-04-16T09:07:16.739+05:30  INFO 19628 --- [student_management_system] [http-nio-8080-exec-2] l.p.s.service.impl.AuthServiceImpl       : JWT Token generated successfully for user: teacher2
+2026-04-16T09:07:16.740+05:30  INFO 19628 --- [student_management_system] [http-nio-8080-exec-2] l.p.s.controller.AuthController          : User teacher2 logged in successfully
+2026-04-16T09:07:51.338+05:30  INFO 19628 --- [student_management_system] [http-nio-8080-exec-3] l.p.s.controller.TeacherController       : Teacher profile registration request by user: teacher2
+2026-04-16T09:07:51.347+05:30  INFO 19628 --- [student_management_system] [http-nio-8080-exec-3] l.p.s.service.impl.TeacherServiceImpl    : Creating teacher profile and assignments for: teacher2

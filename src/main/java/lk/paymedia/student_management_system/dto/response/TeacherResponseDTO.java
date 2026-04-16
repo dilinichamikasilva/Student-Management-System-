@@ -3,6 +3,8 @@ package lk.paymedia.student_management_system.dto.response;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.Set;
+
 
 @Data
 @Builder
@@ -16,4 +18,5 @@ public class TeacherResponseDTO {
     private String department;
     private String specialization;
     private String about;
+    private Set<String> assignedCourses;
 }

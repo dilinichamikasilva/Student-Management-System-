@@ -1,17 +1,15 @@
 package lk.paymedia.student_management_system.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
 @Table(name = "teachers")
-@Data
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -47,6 +45,14 @@ public class Teacher {
 
     @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<CourseAssignment> courseAssignments = new HashSet<>();
+
+    public void addCourseAssignment(CourseAssignment assignment) {
+        if (this.courseAssignments == null) {
+            this.courseAssignments = new HashSet<>();
+        }
+        this.courseAssignments.add(assignment);
+        assignment.setTeacher(this);
+    }
 
 
 }

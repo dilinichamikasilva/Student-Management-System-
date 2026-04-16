@@ -7,6 +7,7 @@ import lk.paymedia.student_management_system.entity.*;
 import lk.paymedia.student_management_system.exception.InternalServerErrorException;
 import lk.paymedia.student_management_system.exception.ResourceAlreadyExistsException;
 import lk.paymedia.student_management_system.exception.UserNotFoundException;
+import lk.paymedia.student_management_system.repository.CourseRepository;
 import lk.paymedia.student_management_system.repository.TeacherRepository;
 import lk.paymedia.student_management_system.repository.UserRepository;
 import lk.paymedia.student_management_system.service.TeacherService;
@@ -14,6 +15,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -23,46 +27,50 @@ public class TeacherServiceImpl implements TeacherService {
 
     private final UserRepository userRepository;
     private final TeacherRepository teacherRepository;
+    private final CourseRepository courseRepository;
 
     @Override
     @Transactional
     public TeacherResponseDTO createTeacherProfile(TeacherRequestDTO dto, String currentUsername) {
-        log.info("Attempting to create teacher profile for user: {}", currentUsername);
+        log.info("Creating teacher profile and assignments for: {}", currentUsername);
 
-        //Check if profile already exists
         if (teacherRepository.existsByEmail(dto.getEmail())) {
-            log.warn("Profile creation failed: Email {} already registered", dto.getEmail());
             throw new ResourceAlreadyExistsException("Teacher profile with this email already exists.");
         }
 
-        // Fetch the User entity
         User user = userRepository.findByUsername(currentUsername)
                 .orElseThrow(() -> new UserNotFoundException("User not found: " + currentUsername));
 
-        // Map DTO to Entity
+        // Build Teacher Entity
         Teacher teacher = Teacher.builder()
                 .employeeId(dto.getEmployeeId())
-                .name(Name.builder()
-                        .firstName(dto.getFirstName())
-                        .lastName(dto.getLastName())
-                        .build())
+                .name(new Name(dto.getFirstName(), dto.getLastName()))
                 .email(dto.getEmail())
-                .address(Address.builder()
-                        .street(dto.getStreet())
-                        .city(dto.getCity())
-                        .state(dto.getState())
-                        .zipCode(dto.getZipCode())
-                        .build())
+                .address(new Address(dto.getStreet(), dto.getCity(), dto.getState(), dto.getZipCode()))
                 .phoneNumber(dto.getPhoneNumber())
                 .department(dto.getDepartment())
                 .specialization(dto.getSpecialization())
                 .about(dto.getAbout())
                 .user(user)
+                .courseAssignments(new HashSet<>())
                 .build();
+
+        // Map Multiple Courses to Assignments
+        if (dto.getCourseIds() != null && !dto.getCourseIds().isEmpty()) {
+            dto.getCourseIds().forEach(courseId -> {
+                Course course = courseRepository.findById(courseId)
+                        .orElseThrow(() -> new RuntimeException("Course not found: " + courseId));
+
+                CourseAssignment assignment = new CourseAssignment();
+                assignment.setCourse(course);
+                assignment.setAssignedDate(LocalDate.now());
+
+                teacher.addCourseAssignment(assignment);
+            });
+        }
 
         try {
             Teacher savedTeacher = teacherRepository.save(teacher);
-            log.info("Teacher profile created successfully for ID: {}", savedTeacher.getEmployeeId());
 
             return TeacherResponseDTO.builder()
                     .id(savedTeacher.getId())
@@ -72,12 +80,15 @@ public class TeacherServiceImpl implements TeacherService {
                     .city(savedTeacher.getAddress().getCity())
                     .phoneNumber(savedTeacher.getPhoneNumber())
                     .department(savedTeacher.getDepartment())
-                    .specialization(savedTeacher.getSpecialization())
+                    .specialization(teacher.getSpecialization())
                     .about(savedTeacher.getAbout())
+                    .assignedCourses(savedTeacher.getCourseAssignments().stream()
+                            .map(a -> a.getCourse().getCourseName())
+                            .collect(Collectors.toSet()))
                     .build();
         } catch (Exception e) {
-            log.error("Critical error saving teacher profile: {}", e.getMessage());
-            throw new InternalServerErrorException("Failed to save teacher profile due to database error.");
+            log.error("Error saving teacher: {}", e.getMessage());
+            throw new InternalServerErrorException("Database error during teacher registration.");
         }
     }
 }

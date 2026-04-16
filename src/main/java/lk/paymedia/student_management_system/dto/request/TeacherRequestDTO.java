@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Set;
+
 
 @Data
 @AllArgsConstructor
@@ -21,5 +23,6 @@ public class TeacherRequestDTO {
     private String department;
     private String specialization;
     private String about;
+    private Set<Long> courseIds;
 
 }
