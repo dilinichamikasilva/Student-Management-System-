@@ -2,6 +2,7 @@ package lk.paymedia.student_management_system.controller;
 
 import lk.paymedia.student_management_system.dto.request.UpdateMarksRequestDTO;
 import lk.paymedia.student_management_system.dto.response.CourseGradeResponseDTO;
+import lk.paymedia.student_management_system.dto.response.MarksResponseDTO;
 import lk.paymedia.student_management_system.service.GradeService;
 import lk.paymedia.student_management_system.util.APIResponse;
 import lombok.RequiredArgsConstructor;
@@ -26,8 +27,8 @@ public class GradeController {
             @RequestBody UpdateMarksRequestDTO dto,
             Authentication authentication) {
 
-        gradeService.updateStudentGrades(dto, authentication.getName());
-        return ResponseEntity.ok(new APIResponse(200, "Grades updated successfully", null));
+        MarksResponseDTO marksResponseDTO = gradeService.updateStudentGrades(dto, authentication.getName());
+        return ResponseEntity.ok(new APIResponse(200, "Grades updated successfully", marksResponseDTO));
     }
 
     @GetMapping("/course/{courseId}")

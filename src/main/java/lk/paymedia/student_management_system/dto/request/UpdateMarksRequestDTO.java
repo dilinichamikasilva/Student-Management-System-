@@ -8,6 +8,5 @@ public class UpdateMarksRequestDTO {
     private Long studentId;
     private Long courseId;
     private Double marks;
-    private String grade;
     private Status status;
 }
