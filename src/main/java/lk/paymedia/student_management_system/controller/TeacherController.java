@@ -1,8 +1,6 @@
 package lk.paymedia.student_management_system.controller;
 
-import lk.paymedia.student_management_system.dto.request.StudentRequestDTO;
 import lk.paymedia.student_management_system.dto.request.TeacherRequestDTO;
-import lk.paymedia.student_management_system.dto.response.StudentResponseDTO;
 import lk.paymedia.student_management_system.dto.response.TeacherResponseDTO;
 import lk.paymedia.student_management_system.service.TeacherService;
 import lk.paymedia.student_management_system.util.APIResponse;

@@ -3,7 +3,6 @@ package lk.paymedia.student_management_system.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 @Entity
 @Table(name = "user_roles")
@@ -16,7 +15,6 @@ public class UserRole {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    @ToString.Exclude
     private User user;
 
     @ManyToOne

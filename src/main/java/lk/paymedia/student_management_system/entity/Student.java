@@ -9,7 +9,8 @@ import java.util.Set;
 
 @Entity
 @Table(name = "students")
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -33,13 +34,15 @@ public class Student {
     @Embedded
     private Address address;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "account_status", nullable = false)
+    private AccountStatus accountStatus = AccountStatus.ACTIVE;
+
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
     private Set<Enrollment> enrollments = new HashSet<>();
 
 
@@ -50,4 +53,6 @@ public class Student {
         this.enrollments.add(enrollment);
         enrollment.setStudent(this);
     }
+
+
 }

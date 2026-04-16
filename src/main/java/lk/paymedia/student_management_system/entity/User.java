@@ -3,7 +3,7 @@ package lk.paymedia.student_management_system.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
+
 
 import java.util.HashSet;
 import java.util.Set;
@@ -24,8 +24,10 @@ public class User {
     private String password;
     private Boolean enabled;
 
+    @Column(nullable = false)
+    private boolean isDeleted = false;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true , fetch = FetchType.EAGER)
-    @ToString.Exclude
     private Set<UserRole> userRoles = new HashSet<>();
 
 

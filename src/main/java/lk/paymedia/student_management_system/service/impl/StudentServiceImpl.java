@@ -142,4 +142,38 @@ public class StudentServiceImpl implements StudentService {
         studentRepository.save(student);
         log.info("Extra courses successfully added for student: {}", currentUsername);
     }
+
+    @Override
+    @Transactional
+    public void requestAccountDeletion(String name) {
+        Student student = studentRepository.findByUserUsername(name)
+                .orElseThrow(() -> new ResourceNotFoundException("Student not found"));
+
+        student.setAccountStatus(AccountStatus.DELETION_PENDING);
+        studentRepository.save(student);
+        log.info("Deletion request submitted for student: {}", name);
+    }
+
+    @Override
+    @Transactional
+    public void approveDeletion(Long studentId) {
+        Student student = studentRepository.findById(studentId)
+                .orElseThrow(() -> new ResourceNotFoundException("Student not found"));
+
+        if (student.getAccountStatus() != AccountStatus.DELETION_PENDING) {
+            throw new IllegalStateException("Only pending deletion requests can be approved.");
+        }
+
+        // Update Student status
+        student.setAccountStatus(AccountStatus.DEACTIVATED);
+
+        // soft delete
+        User user = student.getUser();
+        user.setDeleted(true);
+
+        studentRepository.save(student);
+        userRepository.save(user);
+
+        log.info("Student account {} successfully deactivated and locked.", studentId);
+    }
 }

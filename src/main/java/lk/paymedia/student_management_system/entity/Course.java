@@ -8,7 +8,8 @@ import java.util.Set;
 
 @Entity
 @Table(name = "courses")
-@Data
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -29,13 +30,9 @@ public class Course {
     private Boolean isPublished;
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
     private Set<Enrollment> enrollments = new HashSet<>();
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
     private Set<CourseAssignment> courseAssignments = new HashSet<>();
 
 

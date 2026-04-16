@@ -1,15 +1,14 @@
 package lk.paymedia.student_management_system.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import lombok.*;
 
 import java.time.LocalDate;
 
 @Entity
 @Table(name = "enrollments")
-@Data
+@Getter
+@Setter
 public class Enrollment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,14 +16,10 @@ public class Enrollment {
 
     @ManyToOne
     @JoinColumn(name = "student_id", nullable = false)
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
     private Student student;
 
     @ManyToOne
     @JoinColumn(name = "course_id", nullable = false)
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
     private Course course;
 
     private LocalDate enrolledDate;

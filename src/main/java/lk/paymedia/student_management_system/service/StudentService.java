@@ -11,4 +11,8 @@ public interface StudentService {
     void dropCourseForStudent(Long courseId, String name);
 
     void addMoreCourses(Set<Long> courseIds, String name);
+
+    void requestAccountDeletion(String name);
+
+    void approveDeletion(Long studentId);
 }
