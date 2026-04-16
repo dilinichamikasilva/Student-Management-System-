@@ -43,5 +43,11 @@ public class Student {
     private Set<Enrollment> enrollments = new HashSet<>();
 
 
-
+    public void addEnrollment(Enrollment enrollment) {
+        if (this.enrollments == null) {
+            this.enrollments = new HashSet<>();
+        }
+        this.enrollments.add(enrollment);
+        enrollment.setStudent(this);
+    }
 }

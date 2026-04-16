@@ -6,6 +6,7 @@ import lk.paymedia.student_management_system.dto.response.StudentResponseDTO;
 import lk.paymedia.student_management_system.entity.*;
 import lk.paymedia.student_management_system.exception.InternalServerErrorException;
 import lk.paymedia.student_management_system.exception.ResourceAlreadyExistsException;
+import lk.paymedia.student_management_system.exception.ResourceNotFoundException;
 import lk.paymedia.student_management_system.exception.UserNotFoundException;
 import lk.paymedia.student_management_system.repository.CourseRepository;
 import lk.paymedia.student_management_system.repository.StudentRepository;
@@ -53,20 +54,18 @@ public class StudentServiceImpl implements StudentService {
 
         // Handle Course Enrollments
         if (dto.getCourseIds() != null && !dto.getCourseIds().isEmpty()) {
-            log.info("Processing enrollments for {} courses", dto.getCourseIds().size());
-
             dto.getCourseIds().forEach(courseId -> {
                 Course course = courseRepository.findById(courseId)
-                        .orElseThrow(() -> new RuntimeException("Course not found with ID: " + courseId));
+                        .orElseThrow(() -> new ResourceNotFoundException("Course not found: " + courseId));
 
                 Enrollment enrollment = new Enrollment();
-                enrollment.setStudent(student);
                 enrollment.setCourse(course);
                 enrollment.setEnrolledDate(LocalDate.now());
                 enrollment.setStatus(Status.ONGOING);
 
-                student.getEnrollments().add(enrollment);
+                student.addEnrollment(enrollment);
             });
+            studentRepository.save(student);
         }
 
         try {
@@ -78,6 +77,8 @@ public class StudentServiceImpl implements StudentService {
                     .studentId(savedStudent.getStudentId())
                     .fullName(savedStudent.getName().getFirstName() + " " + savedStudent.getName().getLastName())
                     .email(savedStudent.getEmail())
+                    .enrollmentDate(savedStudent.getEnrollmentDate())
+                    .city(savedStudent.getAddress().getCity())
                     .enrolledCourses(savedStudent.getEnrollments().stream()
                             .map(e -> e.getCourse().getCourseName())
                             .collect(Collectors.toSet()))
