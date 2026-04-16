@@ -20,8 +20,10 @@ public class ResultServiceImpl implements ResultService {
 
     @Override
     public List<StudentResultDTO> getMyResults(String username) {
+        // Fetch all enrollments for the student
         List<Enrollment> enrollments = enrollmentRepository.findAllByStudentUsername(username);
 
+        // Map enrollments to StudentResultDTO
         return enrollments.stream()
                 .map(e -> StudentResultDTO.builder()
                         .courseCode(e.getCourse().getCourseCode())

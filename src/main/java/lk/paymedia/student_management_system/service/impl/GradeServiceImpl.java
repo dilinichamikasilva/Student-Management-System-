@@ -37,7 +37,7 @@ public class GradeServiceImpl implements GradeService {
             throw new AccessDeniedException("You are not assigned to this course.");
         }
 
-        // Find the Enrollment record
+        // Find the enrollment record for the student and course
         Enrollment enrollment = enrollmentRepository.findByStudentIdAndCourseId(dto.getStudentId(), dto.getCourseId())
                 .orElseThrow(() -> new ResourceNotFoundException("Enrollment record not found for this student and course."));
 

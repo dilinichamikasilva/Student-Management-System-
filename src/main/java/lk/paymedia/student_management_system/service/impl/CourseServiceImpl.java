@@ -26,11 +26,13 @@ public class CourseServiceImpl implements CourseService {
     public void createCourse(CourseRequestDTO dto) {
         log.info("Creating new course: {} ({})", dto.getCourseName(), dto.getCourseCode());
 
+        // Check for duplicate course code
         if (courseRepository.existsByCourseCode(dto.getCourseCode())) {
             log.warn("Course code {} already exists", dto.getCourseCode());
             throw new ResourceAlreadyExistsException("Course code already exists.");
         }
 
+        // Build Course Entity
         Course course = Course.builder()
                 .courseCode(dto.getCourseCode())
                 .courseName(dto.getCourseName())
@@ -41,29 +43,34 @@ public class CourseServiceImpl implements CourseService {
                 .courseAssignments(new HashSet<>())
                 .build();
 
+        // Save course to database
         courseRepository.save(course);
         log.info("Course {} saved successfully with ID: {}", course.getCourseCode(), course.getId());
     }
 
     @Override
     public Object updateCourse(Long id, CourseRequestDTO dto) {
+        log.info("Updating course with ID: {}", id);
+
+        // Check if the course exists
         Course course = courseRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Course not found with id: " + id));
-        
+
+        // Update course details
         course.setCourseName(dto.getCourseName());
         course.setCredits(dto.getCredits());
         course.setDescription(dto.getDescription());
         course.setIsPublished(Objects.requireNonNullElse(dto.getIsPublished(), course.getIsPublished()));
 
+        // Save updated course to database
         Course updatedCourse = courseRepository.save(course);
         log.info("Course {} updated successfully", updatedCourse.getCourseCode());
-
-
 
         return mapToResponseDTO(updatedCourse);
     }
 
     private CourseResponseDTO mapToResponseDTO(Course course) {
+        // Map Course entity to CourseResponseDTO, including enrolled students and assigned teachers
         return CourseResponseDTO.builder()
                 .id(course.getId())
                 .courseCode(course.getCourseCode())
@@ -82,13 +89,19 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public void deleteCourse(Long id) {
+        log.info("Attempting to delete course with ID: {}", id);
+
+        // Check if the course exists
         Course course = courseRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Course not found"));
 
+        // Prevent deletion if students are enrolled
         if (!course.getEnrollments().isEmpty()) {
             throw new IllegalStateException("Cannot delete course: Students are currently enrolled.");
         }
 
+        //delete course
         courseRepository.delete(course);
+        log.info("Course with ID: {} deleted successfully", id);
     }
 }

@@ -17,9 +17,11 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        // Fetch user from database
         lk.paymedia.student_management_system.entity.User userEntity = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
 
+        // Map User Entity to Spring Security UserDetails
         boolean isDisabled = !Boolean.TRUE.equals(userEntity.getEnabled());
 
         return org.springframework.security.core.userdetails.User.builder()

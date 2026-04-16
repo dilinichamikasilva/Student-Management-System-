@@ -42,20 +42,20 @@ public class AuthServiceImpl implements AuthService {
     public UserResponseDTO registerUser(UserRequestDTO requestDTO) {
         log.info("Registration request received for username: {}", requestDTO.getUsername());
 
-        //Check if user exists
+        //check if user exists
         if (userRepository.existsByUsername(requestDTO.getUsername())) {
             log.warn("Registration failed: Username {} already exists", requestDTO.getUsername());
             throw new ResourceAlreadyExistsException(requestDTO.getUsername());
         }
 
-        //Map DTO to Entity
+        //map dto to entity
         User user = new User();
         user.setUsername(requestDTO.getUsername());
         user.setPassword(passwordEncoder.encode(requestDTO.getPassword()));
         user.setEnabled(true);
         log.debug("Password encoded for user: {}", requestDTO.getUsername());
 
-        //Roles managing
+        //roles managing
         if (requestDTO.getUserRoles() != null && !requestDTO.getUserRoles().isEmpty()) {
             log.info("Assigning roles {} to user {}", requestDTO.getUserRoles(), requestDTO.getUsername());
 
@@ -75,7 +75,7 @@ public class AuthServiceImpl implements AuthService {
             log.warn("No roles provided for user: {}", requestDTO.getUsername());
         }
 
-        //Save to Database
+        //save to database
         try {
             User savedUser = userRepository.save(user);
             log.info("User successfully saved to database with ID: {}", savedUser.getId());
@@ -99,7 +99,7 @@ public class AuthServiceImpl implements AuthService {
         log.info("Login attempt initiated for user: {}", username);
 
         try {
-            //Authentication
+            //authentication
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             username,
@@ -108,24 +108,24 @@ public class AuthServiceImpl implements AuthService {
             );
             log.debug("AuthenticationManager successfully verified credentials for: {}", username);
 
-            //Fetch User from Database
+            //fetch user from db
             User user = userRepository.findByUsername(username)
                     .orElseThrow(() -> {
                         log.error("Authentication succeeded but user {} not found in database!", username);
                         return new RuntimeException("User record missing after authentication");
                     });
 
-            // Extract Role Names
+            // extract roles
             Set<String> roles = user.getUserRoles().stream()
                     .map(ur -> ur.getRole().getRoleType().name())
                     .collect(Collectors.toSet());
             log.debug("Roles extracted for user {}: {}", username, roles);
 
-            //Generate JWT Token
+            //generate jwt token
             String token = jwtUtil.generateToken(user.getUsername());
             log.info("JWT Token generated successfully for user: {}", username);
 
-            // Build Response
+            //build response
             return UserResponseDTO.builder()
                     .id(user.getId())
                     .username(user.getUsername())
