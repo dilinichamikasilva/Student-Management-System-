@@ -29,4 +29,5 @@ public class GradeController {
         gradeService.updateStudentGrades(dto, authentication.getName());
         return ResponseEntity.ok(new APIResponse(200, "Grades updated successfully", null));
     }
+
 }
