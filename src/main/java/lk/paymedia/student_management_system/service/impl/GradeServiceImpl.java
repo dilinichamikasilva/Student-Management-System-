@@ -64,12 +64,20 @@ public class GradeServiceImpl implements GradeService {
 
 
     private String calculateGrade(Double marks) {
-        if (marks == null) return "N/A";
-        if (marks >= 75) return "A";
-        if (marks >= 65) return "B";
-        if (marks >= 55) return "C";
-        if (marks >= 45) return "S";
-        return "F";
+        if (marks == null) {
+            return "N/A";
+        }
+
+        int bucket = (int) (marks / 10);
+
+        return switch (bucket) {
+            case 8 -> "A";
+            case 7 -> (marks >= 75) ? "A" : "B";
+            case 6 -> (marks >= 65) ? "B" : "C";
+            case 5 -> (marks >= 55) ? "C" : "S";
+            case 4 -> (marks >= 45) ? "S" : "F";
+            default -> "F";
+        };
     }
 
     @Override

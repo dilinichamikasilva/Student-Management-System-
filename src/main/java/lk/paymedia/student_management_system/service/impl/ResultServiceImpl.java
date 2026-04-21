@@ -20,18 +20,28 @@ public class ResultServiceImpl implements ResultService {
 
     @Override
     public List<StudentResultDTO> getMyResults(String username) {
-        // Fetch all enrollments for the student
-        List<Enrollment> enrollments = enrollmentRepository.findAllByStudentUsername(username);
+        try{
+            log.info("Fetching results for student: {}", username);
 
-        // Map enrollments to StudentResultDTO
-        return enrollments.stream()
-                .map(e -> StudentResultDTO.builder()
-                        .courseCode(e.getCourse().getCourseCode())
-                        .courseName(e.getCourse().getCourseName())
-                        .marks(e.getMarks())
-                        .grade(e.getGrade())
-                        .status(e.getStatus())
-                        .build())
-                .toList();
+            // Fetch all enrollments for the student
+            List<Enrollment> enrollments = enrollmentRepository.findAllByStudentUsername(username);
+
+            log.info("Results fetched successfully for student: {}", username);
+
+            // Map enrollments to StudentResultDTO
+            return enrollments.stream()
+                    .map(e -> StudentResultDTO.builder()
+                            .courseCode(e.getCourse().getCourseCode())
+                            .courseName(e.getCourse().getCourseName())
+                            .marks(e.getMarks())
+                            .grade(e.getGrade())
+                            .status(e.getStatus())
+                            .build())
+                    .toList();
+        }catch (Exception e){
+            log.error("Error fetching results for student {}: {}", username, e.getMessage());
+            throw e;
+        }
+
     }
 }

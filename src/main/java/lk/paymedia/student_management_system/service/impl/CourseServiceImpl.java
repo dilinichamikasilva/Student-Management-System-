@@ -24,49 +24,60 @@ public class CourseServiceImpl implements CourseService {
     @Override
     @Transactional
     public void createCourse(CourseRequestDTO dto) {
-        log.info("Creating new course: {} ({})", dto.getCourseName(), dto.getCourseCode());
+        try{
+            log.info("Creating new course: {} ({})", dto.getCourseName(), dto.getCourseCode());
 
-        // Check for duplicate course code
-        if (courseRepository.existsByCourseCode(dto.getCourseCode())) {
-            log.warn("Course code {} already exists", dto.getCourseCode());
-            throw new ResourceAlreadyExistsException("Course code already exists.");
+            // Check for duplicate course code
+            if (courseRepository.existsByCourseCode(dto.getCourseCode())) {
+                log.warn("Course code {} already exists", dto.getCourseCode());
+                throw new ResourceAlreadyExistsException("Course code already exists.");
+            }
+
+            // Build Course Entity
+            Course course = Course.builder()
+                    .courseCode(dto.getCourseCode())
+                    .courseName(dto.getCourseName())
+                    .description(dto.getDescription())
+                    .credits(dto.getCredits())
+                    .isPublished(!Boolean.FALSE.equals(dto.getIsPublished()))
+                    .enrollments(new HashSet<>())
+                    .courseAssignments(new HashSet<>())
+                    .build();
+
+            // Save course to database
+            courseRepository.save(course);
+            log.info("Course {} saved successfully with ID: {}", course.getCourseCode(), course.getId());
+
+        }catch (Exception e){
+            log.error("Error creating course: {}", e.getMessage());
+            throw e;
         }
-
-        // Build Course Entity
-        Course course = Course.builder()
-                .courseCode(dto.getCourseCode())
-                .courseName(dto.getCourseName())
-                .description(dto.getDescription())
-                .credits(dto.getCredits())
-                .isPublished(!Boolean.FALSE.equals(dto.getIsPublished()))
-                .enrollments(new HashSet<>())
-                .courseAssignments(new HashSet<>())
-                .build();
-
-        // Save course to database
-        courseRepository.save(course);
-        log.info("Course {} saved successfully with ID: {}", course.getCourseCode(), course.getId());
     }
 
     @Override
     public Object updateCourse(Long id, CourseRequestDTO dto) {
-        log.info("Updating course with ID: {}", id);
+        try{
+            log.info("Updating course with ID: {}", id);
 
-        // Check if the course exists
-        Course course = courseRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Course not found with id: " + id));
+            // Check if the course exists
+            Course course = courseRepository.findById(id)
+                    .orElseThrow(() -> new ResourceNotFoundException("Course not found with id: " + id));
 
-        // Update course details
-        course.setCourseName(dto.getCourseName());
-        course.setCredits(dto.getCredits());
-        course.setDescription(dto.getDescription());
-        course.setIsPublished(Objects.requireNonNullElse(dto.getIsPublished(), course.getIsPublished()));
+            // Update course details
+            course.setCourseName(dto.getCourseName());
+            course.setCredits(dto.getCredits());
+            course.setDescription(dto.getDescription());
+            course.setIsPublished(Objects.requireNonNullElse(dto.getIsPublished(), course.getIsPublished()));
 
-        // Save updated course to database
-        Course updatedCourse = courseRepository.save(course);
-        log.info("Course {} updated successfully", updatedCourse.getCourseCode());
+            // Save updated course to database
+            Course updatedCourse = courseRepository.save(course);
+            log.info("Course {} updated successfully", updatedCourse.getCourseCode());
 
-        return mapToResponseDTO(updatedCourse);
+            return mapToResponseDTO(updatedCourse);
+        }catch (Exception e){
+            log.error("Error updating course with ID {}: {}", id, e.getMessage());
+            throw e;
+        }
     }
 
     private CourseResponseDTO mapToResponseDTO(Course course) {
@@ -89,19 +100,24 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public void deleteCourse(Long id) {
-        log.info("Attempting to delete course with ID: {}", id);
+        try{
+            log.info("Attempting to delete course with ID: {}", id);
 
-        // Check if the course exists
-        Course course = courseRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Course not found"));
+            // Check if the course exists
+            Course course = courseRepository.findById(id)
+                    .orElseThrow(() -> new ResourceNotFoundException("Course not found"));
 
-        // Prevent deletion if students are enrolled
-        if (!course.getEnrollments().isEmpty()) {
-            throw new IllegalStateException("Cannot delete course: Students are currently enrolled.");
+            // Prevent deletion if students are enrolled
+            if (!course.getEnrollments().isEmpty()) {
+                throw new IllegalStateException("Cannot delete course: Students are currently enrolled.");
+            }
+
+            //delete course
+            courseRepository.delete(course);
+            log.info("Course with ID: {} deleted successfully", id);
+        }catch (Exception e){
+            log.warn("Course deletion failed: {}", e.getMessage());
+            throw e;
         }
-
-        //delete course
-        courseRepository.delete(course);
-        log.info("Course with ID: {} deleted successfully", id);
     }
 }

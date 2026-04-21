@@ -40,42 +40,43 @@ public class AuthServiceImpl implements AuthService {
     @Override
     @Transactional
     public UserResponseDTO registerUser(UserRequestDTO requestDTO) {
-        log.info("Registration request received for username: {}", requestDTO.getUsername());
+       try{
+           log.info("Registration request received for username: {}", requestDTO.getUsername());
 
-        //check if user exists
-        if (userRepository.existsByUsername(requestDTO.getUsername())) {
-            log.warn("Registration failed: Username {} already exists", requestDTO.getUsername());
-            throw new ResourceAlreadyExistsException(requestDTO.getUsername());
-        }
+           // Check if user exists
+           if (userRepository.existsByUsername(requestDTO.getUsername())) {
+               log.warn("Registration failed: Username {} already exists", requestDTO.getUsername());
+               throw new ResourceAlreadyExistsException(requestDTO.getUsername());
+           }
 
-        //map dto to entity
-        User user = new User();
-        user.setUsername(requestDTO.getUsername());
-        user.setPassword(passwordEncoder.encode(requestDTO.getPassword()));
-        user.setEnabled(true);
-        log.debug("Password encoded for user: {}", requestDTO.getUsername());
+           // Map DTO to entity
+           User user = new User();
+           user.setUsername(requestDTO.getUsername());
+           user.setPassword(passwordEncoder.encode(requestDTO.getPassword()));
+           user.setEnabled(true);
 
-        //roles managing
-        if (requestDTO.getUserRoles() != null && !requestDTO.getUserRoles().isEmpty()) {
-            log.info("Assigning roles {} to user {}", requestDTO.getUserRoles(), requestDTO.getUsername());
+           // Roles management
+           if (requestDTO.getUserRoles() != null && !requestDTO.getUserRoles().isEmpty()) {
+               user.setUserRoles(requestDTO.getUserRoles().stream().map(roleName -> {
+                   Role role = roleRepository.findByRoleType(RoleType.valueOf(roleName))
+                           .orElseThrow(() -> new RuntimeException("Role " + roleName + " not found."));
 
-            user.setUserRoles(requestDTO.getUserRoles().stream().map(roleName -> {
-                Role role = roleRepository.findByRoleType(RoleType.valueOf(roleName))
-                        .orElseThrow(() -> {
-                            log.error("Role lookup failed: {} not found in database", roleName);
-                            return new RuntimeException("Role " + roleName + " not found in DB.");
-                        });
+                   UserRole userRole = new UserRole();
+                   userRole.setUser(user);
+                   userRole.setRole(role);
+                   return userRole;
+               }).collect(Collectors.toSet()));
+           }
 
-                UserRole userRole = new UserRole();
-                userRole.setUser(user);
-                userRole.setRole(role);
-                return userRole;
-            }).collect(Collectors.toSet()));
-        } else {
-            log.warn("No roles provided for user: {}", requestDTO.getUsername());
-        }
+           // Save and return the result of the save method
+           return saveUserAndBuildResponse(user, requestDTO.getUserRoles());
+       }catch (Exception e){
+              log.error("Error during registration: {}", e.getMessage());
+              throw new InternalServerErrorException("An error occurred during registration. Please try again later.");
+       }
+    }
 
-        //save to database
+    private UserResponseDTO saveUserAndBuildResponse(User user, Set<String> roleNames) {
         try {
             User savedUser = userRepository.save(user);
             log.info("User successfully saved to database with ID: {}", savedUser.getId());
@@ -84,14 +85,14 @@ public class AuthServiceImpl implements AuthService {
                     .id(savedUser.getId())
                     .username(savedUser.getUsername())
                     .enabled(savedUser.getEnabled())
-                    .userRoles(requestDTO.getUserRoles())
+                    .userRoles(roleNames)
                     .build();
-
         } catch (Exception e) {
-            log.error("Database error while saving user {}: {}", requestDTO.getUsername(), e.getMessage());
-            throw new IllegalArgumentException("Internal Server Error: Could not complete registration");
+            log.error("Database error while saving user: {}", e.getMessage());
+            throw new InternalServerErrorException("Could not complete registration due to database error");
         }
     }
+
 
     @Override
     public UserResponseDTO login(UserRequestDTO userRequestDTO) {
