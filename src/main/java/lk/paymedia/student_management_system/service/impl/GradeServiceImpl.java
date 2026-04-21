@@ -29,37 +29,42 @@ public class GradeServiceImpl implements GradeService {
     @Override
     @Transactional
     public MarksResponseDTO updateStudentGrades(UpdateMarksRequestDTO dto, String currentTeacherUsername) {
-        log.info("Teacher {} updating marks for Student ID: {} in Course ID: {}",
-                currentTeacherUsername, dto.getStudentId(), dto.getCourseId());
+        try{
+            log.info("Teacher {} updating marks for Student ID: {} in Course ID: {}",
+                    currentTeacherUsername, dto.getStudentId(), dto.getCourseId());
 
-        boolean isAssigned = teacherRepository.existsByUsernameAndCourseId(currentTeacherUsername, dto.getCourseId());
-        if (!isAssigned) {
-            throw new AccessDeniedException("You are not assigned to this course.");
+            boolean isAssigned = teacherRepository.existsByUsernameAndCourseId(currentTeacherUsername, dto.getCourseId());
+            if (!isAssigned) {
+                throw new AccessDeniedException("You are not assigned to this course.");
+            }
+
+            Enrollment enrollment = enrollmentRepository.findByStudentIdAndCourseId(dto.getStudentId(), dto.getCourseId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Enrollment record not found for this student and course."));
+
+            // Update marks and calculate grade
+            enrollment.setMarks(dto.getMarks());
+            String calculatedGrade = calculateGrade(dto.getMarks());
+            enrollment.setGrade(calculatedGrade);
+
+            if (dto.getStatus() != null) {
+                enrollment.setStatus(dto.getStatus());
+            }
+
+            Enrollment updatedEnrollment = enrollmentRepository.save(enrollment);
+            log.info("Marks updated and grade '{}' assigned successfully.", calculatedGrade);
+
+            // Return the mapped DTO
+            return MarksResponseDTO.builder()
+                    .studentName(updatedEnrollment.getStudent().getName().getFirstName() + " " + updatedEnrollment.getStudent().getName().getLastName())
+                    .courseName(updatedEnrollment.getCourse().getCourseName())
+                    .marks(updatedEnrollment.getMarks())
+                    .grade(updatedEnrollment.getGrade())
+                    .status(updatedEnrollment.getStatus())
+                    .build();
+        }catch (Exception e){
+            log.error("Error updating marks: {}", e.getMessage());
+            throw e;
         }
-
-        Enrollment enrollment = enrollmentRepository.findByStudentIdAndCourseId(dto.getStudentId(), dto.getCourseId())
-                .orElseThrow(() -> new ResourceNotFoundException("Enrollment record not found for this student and course."));
-
-        // Update marks and calculate grade
-        enrollment.setMarks(dto.getMarks());
-        String calculatedGrade = calculateGrade(dto.getMarks());
-        enrollment.setGrade(calculatedGrade);
-
-        if (dto.getStatus() != null) {
-            enrollment.setStatus(dto.getStatus());
-        }
-
-        Enrollment updatedEnrollment = enrollmentRepository.save(enrollment);
-        log.info("Marks updated and grade '{}' assigned successfully.", calculatedGrade);
-
-        // Return the mapped DTO
-        return MarksResponseDTO.builder()
-                .studentName(updatedEnrollment.getStudent().getName().getFirstName() + " " + updatedEnrollment.getStudent().getName().getLastName())
-                .courseName(updatedEnrollment.getCourse().getCourseName())
-                .marks(updatedEnrollment.getMarks())
-                .grade(updatedEnrollment.getGrade())
-                .status(updatedEnrollment.getStatus())
-                .build();
     }
 
 
@@ -82,26 +87,31 @@ public class GradeServiceImpl implements GradeService {
 
     @Override
     public List<CourseGradeResponseDTO> getGradesByCourse(Long courseId, String teacherUsername) {
-        log.info("Teacher {} requesting grades for Course ID: {}", teacherUsername, courseId);
+        try{
+            log.info("Teacher {} requesting grades for Course ID: {}", teacherUsername, courseId);
 
-        // Is this teacher assigned to this course?
-        boolean isAssigned = teacherRepository.existsByUsernameAndCourseId(teacherUsername, courseId);
-        if (!isAssigned) {
-            throw new AccessDeniedException("You are not assigned to view grades for this course.");
+            // Is this teacher assigned to this course?
+            boolean isAssigned = teacherRepository.existsByUsernameAndCourseId(teacherUsername, courseId);
+            if (!isAssigned) {
+                throw new AccessDeniedException("You are not assigned to view grades for this course.");
+            }
+
+            // Fetch all enrollments for the course
+            List<Enrollment> enrollments = enrollmentRepository.findAllByCourseId(courseId);
+
+            // Map to DTO
+            return enrollments.stream()
+                    .map(e -> CourseGradeResponseDTO.builder()
+                            .studentId(e.getStudent().getStudentId())
+                            .studentName(e.getStudent().getName().getFirstName() + " " + e.getStudent().getName().getLastName())
+                            .marks(e.getMarks())
+                            .grade(e.getGrade())
+                            .status(e.getStatus())
+                            .build())
+                    .toList();
+        }catch (Exception e){
+            log.error("Error fetching grades for course ID {}: {}", courseId, e.getMessage());
+            throw e;
         }
-
-        // Fetch all enrollments for the course
-        List<Enrollment> enrollments = enrollmentRepository.findAllByCourseId(courseId);
-
-        // Map to DTO
-        return enrollments.stream()
-                .map(e -> CourseGradeResponseDTO.builder()
-                        .studentId(e.getStudent().getStudentId())
-                        .studentName(e.getStudent().getName().getFirstName() + " " + e.getStudent().getName().getLastName())
-                        .marks(e.getMarks())
-                        .grade(e.getGrade())
-                        .status(e.getStatus())
-                        .build())
-                .toList();
     }
 }

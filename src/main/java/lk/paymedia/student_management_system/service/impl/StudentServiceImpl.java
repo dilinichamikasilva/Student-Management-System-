@@ -34,17 +34,33 @@ public class StudentServiceImpl implements StudentService {
     @Override
     @Transactional
     public StudentResponseDTO createStudentProfile(StudentRequestDTO dto, String currentUsername) {
-        log.info("Creating profile and enrolling user: {}", currentUsername);
+       try{
+           log.info("Creating profile and enrolling user: {}", currentUsername);
 
-        if (studentRepository.existsByEmail(dto.getEmail())) {
-            throw new ResourceAlreadyExistsException("Student profile with this email already exists.");
-        }
+           //Validation and Fetching User
+           validateEmailUniqueness(dto.getEmail());
+           User user = fetchUserByUsername(currentUsername);
 
-        User user = userRepository.findByUsername(currentUsername)
-                .orElseThrow(() -> new UserNotFoundException("User not found: " + currentUsername));
+           //Build Student Entity
+           Student student = mapToStudentEntity(dto, user);
 
-        // Build the Student base entity
-        Student student = Student.builder()
+           // Process Enrollments
+           if (dto.getCourseIds() != null && !dto.getCourseIds().isEmpty()) {
+               processCourseEnrollments(student, dto.getCourseIds());
+           }
+
+           //Save and Return Response
+           return saveAndMapToResponse(student);
+       }catch (Exception e){
+           log.error("Error creating student profile for user {}: {}", currentUsername, e.getMessage());
+           throw e;
+       }
+    }
+
+// --- Helper Methods ---
+
+    private Student mapToStudentEntity(StudentRequestDTO dto, User user) {
+        return Student.builder()
                 .studentId(dto.getStudentId())
                 .email(dto.getEmail())
                 .dateOfBirth(dto.getDateOfBirth())
@@ -54,10 +70,11 @@ public class StudentServiceImpl implements StudentService {
                 .user(user)
                 .enrollments(new HashSet<>())
                 .build();
+    }
 
-        // Handle Course Enrollments
-        if (dto.getCourseIds() != null && !dto.getCourseIds().isEmpty()) {
-            dto.getCourseIds().forEach(courseId -> {
+    private void processCourseEnrollments(Student student, Set<Long> courseIds) {
+        try{
+            courseIds.forEach(courseId -> {
                 Course course = courseRepository.findById(courseId)
                         .orElseThrow(() -> new ResourceNotFoundException("Course not found: " + courseId));
 
@@ -68,9 +85,13 @@ public class StudentServiceImpl implements StudentService {
 
                 student.addEnrollment(enrollment);
             });
-            studentRepository.save(student);
+        }catch (Exception e){
+            log.error("Error processing course enrollments: {}", e.getMessage());
+            throw e;
         }
+    }
 
+    private StudentResponseDTO saveAndMapToResponse(Student student) {
         try {
             Student savedStudent = studentRepository.save(student);
             log.info("Student and enrollments saved successfully.");
@@ -86,94 +107,124 @@ public class StudentServiceImpl implements StudentService {
                             .map(e -> e.getCourse().getCourseName())
                             .collect(Collectors.toSet()))
                     .build();
-
         } catch (Exception e) {
             log.error("Error during student registration: {}", e.getMessage());
             throw new InternalServerErrorException("Failed to complete registration and enrollment.");
         }
     }
 
+    private void validateEmailUniqueness(String email) {
+        if (studentRepository.existsByEmail(email)) {
+            throw new ResourceAlreadyExistsException("Student profile with this email already exists.");
+        }
+    }
+
+    private User fetchUserByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException("User not found: " + username));
+    }
+
     @Override
     @Transactional
     public void dropCourseForStudent(Long courseId, String currentUsername) {
-        log.info("Student {} attempting to drop course ID: {}", currentUsername, courseId);
+        try{
+            log.info("Student {} attempting to drop course ID: {}", currentUsername, courseId);
 
-        // find enrollment
-        Enrollment enrollment = enrollmentRepository.findByStudentUserUsernameAndCourseId(currentUsername, courseId)
-                .orElseThrow(() -> new ResourceNotFoundException("You are not enrolled in this course."));
+            // find enrollment
+            Enrollment enrollment = enrollmentRepository.findByStudentUserUsernameAndCourseId(currentUsername, courseId)
+                    .orElseThrow(() -> new ResourceNotFoundException("You are not enrolled in this course."));
 
-        // Only allow dropping if the course is not completed
-        if (Status.COMPLETED.equals(enrollment.getStatus())) {
-            throw new IllegalStateException("Cannot drop a course that is already completed.");
+            // Only allow dropping if the course is not completed
+            if (Status.COMPLETED.equals(enrollment.getStatus())) {
+                throw new IllegalStateException("Cannot drop a course that is already completed.");
+            }
+
+            enrollmentRepository.delete(enrollment);
+            log.info("Course ID: {} dropped successfully for student: {}", courseId, currentUsername);
+        }catch (Exception e){
+            log.error("Error dropping course ID: {} for student {}: {}", courseId, currentUsername, e.getMessage());
+            throw e;
         }
-
-        enrollmentRepository.delete(enrollment);
-        log.info("Course ID: {} dropped successfully for student: {}", courseId, currentUsername);
     }
 
     @Override
     @Transactional
     public void addMoreCourses(Set<Long> newCourseIds, String currentUsername) {
-        log.info("Student {} adding {} more courses", currentUsername, newCourseIds.size());
+        try{
+            log.info("Student {} adding {} more courses", currentUsername, newCourseIds.size());
 
-        // Fetch the Student profile
-        Student student = studentRepository.findByUserUsername(currentUsername)
-                .orElseThrow(() -> new ResourceNotFoundException("Student profile not found. Please register first."));
+            // Fetch the Student profile
+            Student student = studentRepository.findByUserUsername(currentUsername)
+                    .orElseThrow(() -> new ResourceNotFoundException("Student profile not found. Please register first."));
 
-        Set<Long> existingCourseIds = student.getEnrollments().stream()
-                .map(e -> e.getCourse().getId())
-                .collect(Collectors.toSet());
+            Set<Long> existingCourseIds = student.getEnrollments().stream()
+                    .map(e -> e.getCourse().getId())
+                    .collect(Collectors.toSet());
 
-        // Add only the new courses
-        newCourseIds.stream()
-                .filter(courseId -> !existingCourseIds.contains(courseId))
-                .forEach(courseId -> {
-                    Course course = courseRepository.findById(courseId)
-                            .orElseThrow(() -> new ResourceNotFoundException("Course not found: " + courseId));
+            // Add only the new courses
+            newCourseIds.stream()
+                    .filter(courseId -> !existingCourseIds.contains(courseId))
+                    .forEach(courseId -> {
+                        Course course = courseRepository.findById(courseId)
+                                .orElseThrow(() -> new ResourceNotFoundException("Course not found: " + courseId));
 
-                    Enrollment enrollment = new Enrollment();
-                    enrollment.setCourse(course);
-                    enrollment.setEnrolledDate(LocalDate.now());
-                    enrollment.setStatus(Status.ONGOING);
+                        Enrollment enrollment = new Enrollment();
+                        enrollment.setCourse(course);
+                        enrollment.setEnrolledDate(LocalDate.now());
+                        enrollment.setStatus(Status.ONGOING);
 
-                    student.addEnrollment(enrollment);
-                });
+                        student.addEnrollment(enrollment);
+                    });
 
-        studentRepository.save(student);
-        log.info("Extra courses successfully added for student: {}", currentUsername);
+            studentRepository.save(student);
+            log.info("Extra courses successfully added for student: {}", currentUsername);
+        }catch (Exception e){
+            log.error("Error adding courses for student {}: {}", currentUsername, e.getMessage());
+            throw e;
+        }
     }
 
     @Override
     @Transactional
     public void requestAccountDeletion(String name) {
-        Student student = studentRepository.findByUserUsername(name)
-                .orElseThrow(() -> new ResourceNotFoundException("Student not found"));
+        try{
+            Student student = studentRepository.findByUserUsername(name)
+                    .orElseThrow(() -> new ResourceNotFoundException("Student not found"));
 
-        student.setAccountStatus(AccountStatus.DELETION_PENDING);
-        studentRepository.save(student);
-        log.info("Deletion request submitted for student: {}", name);
+            student.setAccountStatus(AccountStatus.DELETION_PENDING);
+            studentRepository.save(student);
+            log.info("Deletion request submitted for student: {}", name);
+        }catch (Exception e){
+            log.error("Error requesting account deletion for student {}: {}", name, e.getMessage());
+            throw e;
+        }
     }
 
     @Override
     @Transactional
     public void approveDeletion(Long studentId) {
-        Student student = studentRepository.findById(studentId)
-                .orElseThrow(() -> new ResourceNotFoundException("Student not found"));
+       try{
+           Student student = studentRepository.findById(studentId)
+                   .orElseThrow(() -> new ResourceNotFoundException("Student not found"));
 
-        if (student.getAccountStatus() != AccountStatus.DELETION_PENDING) {
-            throw new IllegalStateException("Only pending deletion requests can be approved.");
-        }
+           if (student.getAccountStatus() != AccountStatus.DELETION_PENDING) {
+               throw new IllegalStateException("Only pending deletion requests can be approved.");
+           }
 
-        // Update Student status
-        student.setAccountStatus(AccountStatus.DEACTIVATED);
+           // Update Student status
+           student.setAccountStatus(AccountStatus.DEACTIVATED);
 
-        // soft delete
-        User user = student.getUser();
-        user.setDeleted(true);
+           // soft delete
+           User user = student.getUser();
+           user.setDeleted(true);
 
-        studentRepository.save(student);
-        userRepository.save(user);
+           studentRepository.save(student);
+           userRepository.save(user);
 
-        log.info("Student account {} successfully deactivated and locked.", studentId);
+           log.info("Student account {} successfully deactivated and locked.", studentId);
+       }catch (Exception e){
+              log.error("Error approving deletion for student ID {}: {}", studentId, e.getMessage());
+              throw e;
+       }
     }
 }

@@ -36,17 +36,44 @@ public class TeacherServiceImpl implements TeacherService {
     @Override
     @Transactional
     public TeacherResponseDTO createTeacherProfile(TeacherRequestDTO dto, String currentUsername) {
-        log.info("Creating teacher profile and assignments for: {}", currentUsername);
+        try{
+            log.info("Creating teacher profile and assignments for: {}", currentUsername);
 
-        if (teacherRepository.existsByEmail(dto.getEmail())) {
+            // Validation and Fetching
+            validateTeacherUniqueness(dto.getEmail());
+            User user = fetchUserByUsername(currentUsername);
+
+            // Build Teacher Entity
+            Teacher teacher = mapToTeacherEntity(dto, user);
+
+            // Process Course Assignments
+            if (dto.getCourseIds() != null && !dto.getCourseIds().isEmpty()) {
+                processCourseAssignments(teacher, dto.getCourseIds());
+            }
+
+            // Save and Map to Response
+            return saveAndMapToResponse(teacher);
+        }catch (Exception e){
+            log.error("Error creating teacher profile for user {}: {}", currentUsername, e.getMessage());
+            throw e;
+        }
+    }
+
+// ---  Helper Methods ---
+
+    private void validateTeacherUniqueness(String email) {
+        if (teacherRepository.existsByEmail(email)) {
             throw new ResourceAlreadyExistsException("Teacher profile with this email already exists.");
         }
+    }
 
-        User user = userRepository.findByUsername(currentUsername)
-                .orElseThrow(() -> new UserNotFoundException("User not found: " + currentUsername));
+    private User fetchUserByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException("User not found: " + username));
+    }
 
-        // Build Teacher Entity
-        Teacher teacher = Teacher.builder()
+    private Teacher mapToTeacherEntity(TeacherRequestDTO dto, User user) {
+        return Teacher.builder()
                 .employeeId(dto.getEmployeeId())
                 .name(new Name(dto.getFirstName(), dto.getLastName()))
                 .email(dto.getEmail())
@@ -58,23 +85,25 @@ public class TeacherServiceImpl implements TeacherService {
                 .user(user)
                 .courseAssignments(new HashSet<>())
                 .build();
+    }
 
-        // Map Multiple Courses to Assignments
-        if (dto.getCourseIds() != null && !dto.getCourseIds().isEmpty()) {
-            dto.getCourseIds().forEach(courseId -> {
-                Course course = courseRepository.findById(courseId)
-                        .orElseThrow(() -> new RuntimeException("Course not found: " + courseId));
+    private void processCourseAssignments(Teacher teacher, Set<Long> courseIds) {
+        courseIds.forEach(courseId -> {
+            Course course = courseRepository.findById(courseId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Course not found: " + courseId));
 
-                CourseAssignment assignment = new CourseAssignment();
-                assignment.setCourse(course);
-                assignment.setAssignedDate(LocalDate.now());
+            CourseAssignment assignment = new CourseAssignment();
+            assignment.setCourse(course);
+            assignment.setAssignedDate(LocalDate.now());
 
-                teacher.addCourseAssignment(assignment);
-            });
-        }
+            teacher.addCourseAssignment(assignment);
+        });
+    }
 
+    private TeacherResponseDTO saveAndMapToResponse(Teacher teacher) {
         try {
             Teacher savedTeacher = teacherRepository.save(teacher);
+            log.info("Teacher and assignments saved successfully.");
 
             return TeacherResponseDTO.builder()
                     .id(savedTeacher.getId())
@@ -84,15 +113,16 @@ public class TeacherServiceImpl implements TeacherService {
                     .city(savedTeacher.getAddress().getCity())
                     .phoneNumber(savedTeacher.getPhoneNumber())
                     .department(savedTeacher.getDepartment())
-                    .specialization(teacher.getSpecialization())
+                    .specialization(savedTeacher.getSpecialization())
                     .about(savedTeacher.getAbout())
                     .assignedCourses(savedTeacher.getCourseAssignments().stream()
                             .map(a -> a.getCourse().getCourseName())
                             .collect(Collectors.toSet()))
                     .build();
+
         } catch (Exception e) {
-            log.error("Error saving teacher: {}", e.getMessage());
-            throw new InternalServerErrorException("Database error during teacher registration.");
+            log.error("Error during teacher registration: {}", e.getMessage());
+            throw new InternalServerErrorException("Failed to complete teacher profile registration.");
         }
     }
 
